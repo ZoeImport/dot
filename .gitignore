@@ -1,0 +1,17 @@
+*.backup*
+*.bak
+*.old
+*.new
+*.dms-backup
+.idea/
+dms/
+neoconf.json
+antigravity-accounts.json
+node_modules/
+*.lock.bak
+# opencode
+opencode/antigravity-accounts.json
+opencode/node_modules/
+opencode/command/
+opencode/commands/
+opencode/plugins/
