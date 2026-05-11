@@ -1,0 +1,362 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "@plannotator/opencode@latest",
+    "opencode-worktree@latest",
+    "oh-my-openagent@latest"
+  ],
+  "provider": {
+    "tag-native": {
+      "npm": "@ai-sdk/anthropic",
+      "name": "Tag (ath)",
+      "options": {
+        "baseURL": "https://tag.airaphe.com",
+        "apiKey": "TAG_API_KEY_PLACEHOLDER"
+      },
+      "models": {
+        "claude-opus-4-6": {
+          "name": "Claude Opus 4.6 (ath)",
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "medium": {
+              "effort": "medium"
+            },
+            "high": {
+              "effort": "high"
+            },
+            "xhigh": {
+              "effort": "xhigh"
+            },
+            "max": {
+              "effort": "max"
+            }
+          }
+        },
+        "claude-opus-4-7": {
+          "name": "Claude Opus 4.7 (ath)",
+          "limit": {
+            "context": 1000000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "medium": {
+              "effort": "medium"
+            },
+            "high": {
+              "effort": "high"
+            },
+            "xhigh": {
+              "effort": "xhigh"
+            },
+            "max": {
+              "effort": "max"
+            }
+          }
+        },
+        "claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6 (ath)",
+          "limit": {
+            "context": 1000000,
+            "output": 64000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "medium": {
+              "effort": "medium"
+            },
+            "high": {
+              "effort": "high"
+            },
+            "xhigh": {
+              "effort": "xhigh"
+            },
+            "max": {
+              "effort": "max"
+            }
+          }
+        },
+        "gpt-5.5": {
+          "name": "GPT-5.5 (ath)",
+          "limit": {
+            "context": 1050000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          }
+        },
+        "gpt-5.4": {
+          "name": "GPT-5.4 (ath)",
+          "limit": {
+            "context": 1050000,
+            "output": 128000
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image",
+              "pdf"
+            ],
+            "output": [
+              "text"
+            ]
+          }
+        }
+      }
+    },
+    "unlimited": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://api.yygu.cn/v3/llm.chat",
+        "apiKey": "UNLIMITED_API_KEY_PLACEHOLDER"
+      },
+      "models": {
+        "aliyun/glm-4.7": {
+          "name": "GLM-4.7 (unlimited)",
+          "limit": {
+            "context": 128000,
+            "output": 4096
+          }
+        },
+        "aliyun/glm-5": {
+          "name": "GLM-5 (unlimited)",
+          "limit": {
+            "context": 128000,
+            "output": 4096
+          }
+        },
+        "aliyun/glm-5.1": {
+          "name": "GLM-5.1 (unlimited)",
+          "limit": {
+            "context": 200000,
+            "output": 131072
+          }
+        },
+        "aliyun/kimi-k2.6": {
+          "name": "Kimi K2.6 (unlimited)",
+          "limit": {
+            "context": 262144,
+            "output": 4096
+          }
+        },
+        "deepseek-v4-pro": {
+          "name": "DeepSeek V4 Pro (unlimited)",
+          "limit": {
+            "context": 1000000,
+            "output": 384000
+          },
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "medium": {
+              "effort": "medium"
+            },
+            "high": {
+              "effort": "high"
+            },
+            "max": {
+              "effort": "max"
+            }
+          }
+        },
+        "deepseek/deepseek-v4-flash": {
+          "name": "DeepSeek V4 Flash (unlimited)",
+          "limit": {
+            "context": 1000000,
+            "output": 384000
+          },
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "medium": {
+              "effort": "medium"
+            },
+            "high": {
+              "effort": "high"
+            },
+            "max": {
+              "effort": "max"
+            }
+          }
+        }
+      }
+    }
+  },
+  "mcp": {
+    "figma": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "figma-mcp"
+      ],
+      "environment": {
+        "FIGMA_API_KEY": "******"
+      }
+    }
+  },
+  "agent": {
+    "explore": {
+      "disable": true
+    },
+    "general": {
+      "disable": true
+    },
+    "build": {
+      "fallback_models": [
+        "unlimited/aliyun/glm-5.1",
+        "unlimited/aliyun/kimi-k2.6",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6",
+        "unlimited/aliyun/glm-5"
+      ]
+    },
+    "oracle": {
+      "fallback_models": [
+        "tag-native/claude-opus-4-7",
+        "unlimited/aliyun/kimi-k2.6",
+        "unlimited/aliyun/glm-5.1",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ]
+    },
+    "deep": {
+      "fallback_models": [
+        "unlimited/aliyun/glm-5.1",
+        "unlimited/aliyun/kimi-k2.6",
+        "tag-native/claude-opus-4-7",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ]
+    },
+    "ultrabrain": {
+      "fallback_models": [
+        "tag-native/claude-opus-4-7",
+        "unlimited/aliyun/kimi-k2.6",
+        "unlimited/aliyun/glm-5.1",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ]
+    },
+    "visual-engineering": {
+      "fallback_models": [
+        "tag-native/claude-opus-4-7",
+        "unlimited/aliyun/kimi-k2.6",
+        "unlimited/aliyun/glm-5.1",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ]
+    },
+    "quick": {
+      "fallback_models": [
+        "unlimited/aliyun/glm-5",
+        "unlimited/aliyun/glm-5.1",
+        "unlimited/aliyun/kimi-k2.6",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ]
+    },
+    "sisyphus": {
+      "fallback_models": [
+        "unlimited/aliyun/glm-5.1",
+        "unlimited/aliyun/kimi-k2.6",
+        "tag-native/claude-opus-4-7",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6",
+        "unlimited/aliyun/glm-5"
+      ]
+    },
+    "sisyphus-junior": {
+      "fallback_models": [
+        "unlimited/aliyun/glm-5",
+        "unlimited/aliyun/glm-5.1",
+        "unlimited/aliyun/kimi-k2.6",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ]
+    },
+    "prometheus": {
+      "fallback_models": [
+        "unlimited/aliyun/glm-5.1",
+        "unlimited/aliyun/kimi-k2.6",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-opus-4-7",
+        "tag-native/claude-sonnet-4-6"
+      ]
+    },
+    "metis": {
+      "fallback_models": [
+        "unlimited/aliyun/kimi-k2.6",
+        "unlimited/aliyun/glm-5.1",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6",
+        "unlimited/aliyun/glm-5"
+      ]
+    },
+    "momus": {
+      "fallback_models": [
+        "unlimited/aliyun/kimi-k2.6",
+        "unlimited/aliyun/glm-5.1",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6",
+        "unlimited/aliyun/glm-5"
+      ]
+    },
+    "multimodal-looker": {
+      "fallback_models": [
+        "tag-native/claude-sonnet-4-6",
+        "unlimited/aliyun/kimi-k2.6",
+        "unlimited/aliyun/glm-5.1",
+        "tag-native/gpt-5.4"
+      ]
+    }
+  }
+}
