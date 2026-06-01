@@ -228,7 +228,7 @@
         "figma-mcp"
       ],
       "environment": {
-        "FIGMA_API_KEY": "******"
+        "FIGMA_API_KEY": "xxx"
       }
     }
   },
@@ -241,7 +241,6 @@
     },
     "build": {
       "fallback_models": [
-        "deepseek/deepseek-v4-pro",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
@@ -258,7 +257,6 @@
     },
     "deep": {
       "fallback_models": [
-        "deepseek/deepseek-v4-pro",
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
@@ -270,7 +268,6 @@
       "fallback_models": [
         "tag-native/claude-opus-4-7",
         "deepseek/deepseek-v4-flash",
-        "deepseek/deepseek-v4-pro",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
@@ -279,7 +276,6 @@
       "fallback_models": [
         "tag-native/claude-opus-4-7",
         "deepseek/deepseek-v4-flash",
-        "deepseek/deepseek-v4-pro",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
@@ -287,7 +283,6 @@
     "quick": {
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
-        "deepseek/deepseek-v4-pro",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
@@ -295,9 +290,8 @@
     "atlas": {
       "mode": "subagent",
       "description": "Plan Executor - executes implementation plans task by task",
-      "model": "deepseek/deepseek-v4-pro",
+      "model": "deepseek/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-pro",
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
@@ -306,7 +300,6 @@
     },
     "sisyphus": {
       "fallback_models": [
-        "deepseek/deepseek-v4-pro",
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
@@ -316,7 +309,6 @@
     "sisyphus-junior": {
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
-        "deepseek/deepseek-v4-pro",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
@@ -325,6 +317,7 @@
       "color": "#FF5722",
       "mode": "primary",
       "description": "Plan agent for complex multi-step tasks. Consult Prometheus first before implementation. (Prometheus - OhMyOpenCode)",
+      "model": "deepseek/deepseek-v4-pro",
       "fallback_models": [
         "deepseek/deepseek-v4-pro",
         "deepseek/deepseek-v4-flash",
@@ -336,7 +329,6 @@
     "metis": {
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
-        "deepseek/deepseek-v4-pro",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
@@ -344,7 +336,6 @@
     "momus": {
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
-        "deepseek/deepseek-v4-pro",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
@@ -353,7 +344,6 @@
       "fallback_models": [
         "tag-native/claude-sonnet-4-6",
         "deepseek/deepseek-v4-flash",
-        "deepseek/deepseek-v4-pro",
         "tag-native/gpt-5.4"
       ]
     }

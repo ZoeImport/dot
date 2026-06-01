@@ -1,0 +1,14 @@
+{
+  "name": "docx-demo",
+  "version": "1.0.0",
+  "description": "Demonstrate DOCX generation with docxtemplater, headings, fonts, and TOC",
+  "main": "generate.js",
+  "scripts": {
+    "start": "node generate.js",
+    "inspect": "node inspect.js"
+  },
+  "dependencies": {
+    "docxtemplater": "^3.50.0",
+    "pizzip": "^3.1.7"
+  }
+}
