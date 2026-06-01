@@ -148,32 +148,6 @@
         "apiKey": "xxx"
       },
       "models": {
-        "deepseek-v4-pro": {
-          "name": "DeepSeek V4 Pro (deepseek)",
-          "limit": {
-            "context": 1000000,
-            "output": 384000
-          },
-          "modalities": {
-            "input": [
-              "text"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "medium": {
-              "effort": "medium"
-            },
-            "high": {
-              "effort": "high"
-            },
-            "max": {
-              "effort": "max"
-            }
-          }
-        },
         "deepseek-v4-flash": {
           "name": "DeepSeek V4 Flash (deepseek)",
           "limit": {
@@ -228,7 +202,7 @@
         "figma-mcp"
       ],
       "environment": {
-        "FIGMA_API_KEY": "xxx"
+        "FIGMA_API_KEY": "******"
       }
     }
   },
@@ -248,7 +222,7 @@
     },
     "oracle": {
       "fallback_models": [
-        "deepseek/deepseek-v4-pro",
+        "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
@@ -317,9 +291,9 @@
       "color": "#FF5722",
       "mode": "primary",
       "description": "Plan agent for complex multi-step tasks. Consult Prometheus first before implementation. (Prometheus - OhMyOpenCode)",
-      "model": "deepseek/deepseek-v4-pro",
+      "model": "deepseek/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-pro",
+        "deepseek/deepseek-v4-flash",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-opus-4-7",
