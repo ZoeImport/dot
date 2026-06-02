@@ -63,6 +63,82 @@ vim ~/.config/opencode/opencode.json
 # or: code ~/.config/opencode/opencode.json
 ```
 
+## 📦 Interactive Import
+
+> When setting up on a new machine, you can choose **which skills and plugins** to import —
+> no need to install everything if you only need a subset.
+
+### Usage
+
+When running setup with an AI agent, the agent will present a multi-select question:
+
+```
+📋 可用的 Skills（共 18 个）:
+  1.  add-provider-model        - 添加 AI Provider/Model
+  2.  agent-browser             - 浏览器自动化
+  3.  defect-handler            - Bug 分析修复工作流
+  ...（完整列表自动生成）
+
+🔌 可用的 Plugins:
+  1.  oh-my-openagent@latest    - Agent 分类/模型路由
+  2.  superpowers               - 技能系统/TDD/验证
+  3.  opencode-worktree@latest  - 工作区管理
+
+❓ 请选择导入方式:
+  A) 全部导入（一键安装所有 skills + plugins）
+  C) 自定义选择（从列表中勾选需要的项目）
+  X) 取消
+```
+
+### Flow
+
+```
+用户触发安装
+    │
+    ▼
+检测本地 .config/opencode/ 和 .agents/skills/ 是否存在
+    │
+    ├─ 已存在 → 询问"覆盖/合并/跳过"
+    │
+    ▼
+展示 Skills 清单 + Plugins 清单（自动检测仓库内容）
+    │
+    ▼
+提问: [A]全部导入 [C]自定义选择 [X]取消
+    │
+    ├─ A → cp -r 所有 + npm install 所有 plugins
+    │
+    ├─ C → 多选 skills → 多选 plugins → 只复制选中的
+    │
+    └─ X → 退出
+```
+
+### Multi-Select Format
+
+When user chooses "自定义选择" (Custom):
+```
+🟢 已选: [x] defect-handler, [x] sync-dot, [ ] ...
+请选择要导入的 skills（空格多选，回车确认）:
+```
+
+Same flow for plugins.
+
+### Custom Import Commands (for reference)
+
+After selection, the agent runs:
+```bash
+# Skills — only copy selected ones
+for skill in add-provider-model defect-handler sync-dot; do
+  cp -r ~/CodeSpace/dot/skills/$skill ~/.agents/skills/
+done
+
+# Plugins — only install selected ones
+cd ~/.config/opencode
+for plugin in oh-my-openagent@latest superpowers@git+https://github.com/obra/superpowers.git; do
+  npm install $plugin
+done
+```
+
 ---
 
 ## 🤖 Agent Setup Prompt
@@ -91,18 +167,40 @@ REPOSITORY IS PUBLIC. If git clone or any file fetch returns 404/access denied:
 2. Copy config files:
    `cp -r ~/CodeSpace/dot/opencode/* ~/.config/opencode/`
 
-3. Copy skills:
-   `mkdir -p ~/.agents/skills/ && cp -r ~/CodeSpace/dot/skills/* ~/.agents/skills/`
+3. Import skills (INTERACTIVE):
+   List all available skills from `~/CodeSpace/dot/skills/`
+   Present the user with a choice:
+   a) Import ALL skills → `cp -r ~/CodeSpace/dot/skills/* ~/.agents/skills/`
+   b) Custom select → Show multi-select list, copy only chosen ones
+   c) Skip skills → proceed without them (can import later)
 
-## Phase 2 — Install Plugins
+   For custom selection, present as:
+   "Which skills would you like to import? (Enter numbers separated by spaces, or 'all' for everything)"
 
-OpenCode.json defines these plugins (auto-install on first launch is supported):
-  - `oh-my-openagent@latest` — agent categories, model routing, fallback logic
-  - `superpowers@git+https://github.com/obra/superpowers.git` — skill system, brainstorming, subagent-driven development, TDD, verification, and more
-  - `opencode-worktree@latest` — worktree management
+   Available skills:
+   1) add-provider-model     - Add AI provider/model
+   2) agent-browser          - Browser automation
+   3) defect-handler         - Bug analysis workflow
+   4) qimen-skill            - 奇门遁甲 Divination (Qi Men Dun Jia)
+   ... (auto-detect full list from repo)
 
-Run to ensure they're installed:
-  `cd ~/.config/opencode && npm install oh-my-openagent@latest superpowers@git+https://github.com/obra/superpowers.git`
+   After selection: `cp -r ~/CodeSpace/dot/skills/{selected} ~/.agents/skills/`
+
+## Phase 2 — Install Plugins (INTERACTIVE)
+
+Available plugins from opencode.json:
+  1) `oh-my-openagent@latest`              — Agent categories, model routing, fallback logic
+  2) `superpowers@git+https://github.com/obra/superpowers.git` — Skill system, TDD, verification
+  3) `opencode-worktree@latest`            — Worktree management
+
+Ask the user:
+  a) Install ALL plugins
+  b) Custom select
+  c) Skip
+
+For custom: "Which plugins to install? (Enter numbers separated by spaces, or 'all' for everything)"
+
+After selection: `cd ~/.config/opencode && npm install {selected}`
 
 ## Phase 3 — Configure API Keys
 
@@ -152,16 +250,40 @@ Send me a summary like:
 
 1. 克隆仓库：`git clone https://github.com/ZoeImport/dot.git ~/CodeSpace/dot`
 2. 复制配置：`cp -r ~/CodeSpace/dot/opencode/* ~/.config/opencode/`
-3. 复制技能：`mkdir -p ~/.agents/skills/ && cp -r ~/CodeSpace/dot/skills/* ~/.agents/skills/`
+3. 导入技能（交互式）：
+   列出 `~/CodeSpace/dot/skills/` 下所有可用技能
+   让用户选择：
+   a) 导入全部技能 → `cp -r ~/CodeSpace/dot/skills/* ~/.agents/skills/`
+   b) 自定义选择 → 显示多选列表，只复制选中的
+   c) 跳过技能 → 不导入，后续可补
 
-## 第二步 — 安装插件
+   自定义选择时：
+   "请选择要导入的 skills（输入编号，空格分隔，或输入 all 全部导入）"
 
-opencode.json 中定义了以下插件（首次启动会自动安装）：
-  - `oh-my-openagent@latest` — Agent 分类、模型路由、回退逻辑
-  - `superpowers@git+https://github.com/obra/superpowers.git` — 技能系统、头脑风暴、TDD、验证等
-  - `opencode-worktree@latest` — 工作区管理
+   可用技能：
+   1) add-provider-model     - 添加 AI Provider/Model
+   2) agent-browser          - 浏览器自动化
+   3) defect-handler         - Bug 分析修复工作流
+   4) qimen-skill            - 奇门遁甲排盘
+   ...（自动检测仓库完整列表）
 
-确保安装：`cd ~/.config/opencode && npm install oh-my-openagent@latest superpowers@git+https://github.com/obra/superpowers.git`
+   选择后执行：`cp -r ~/CodeSpace/dot/skills/{selected} ~/.agents/skills/`
+
+## 第二步 — 安装插件（交互式）
+
+opencode.json 中可用的插件：
+  1) `oh-my-openagent@latest`              — Agent 分类、模型路由、回退逻辑
+  2) `superpowers@git+https://github.com/obra/superpowers.git` — 技能系统、TDD、验证
+  3) `opencode-worktree@latest`            — 工作区管理
+
+询问用户：
+  a) 安装全部插件
+  b) 自定义选择
+  c) 跳过
+
+自定义时："请选择要安装的 plugins（输入编号，空格分隔，或输入 all 全部安装）"
+
+选择后执行：`cd ~/.config/opencode && npm install {selected}`
 
 ## 第三步 — 配置 API Key
 
@@ -217,4 +339,5 @@ Model routing logic (in `oh-my-openagent.json`): expensive models only for tasks
 | `sync-dot` | Sync local config → this dot repo |
 | `technical-solution-doc` | Generate tech design documents |
 | `unit-test-generate` | Generate unit tests |
+| `qimen-skill` | 奇门遁甲排盘 — 时家/日家 + 超神接气定局 + 历史趋势分析 |
 | `weekly-report` | Generate weekly report from GitLab commits |
