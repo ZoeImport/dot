@@ -181,3 +181,33 @@ allowed-tools: Bash, Read, Write
 - 写入时合并到现有 provider 中，不要覆盖其他 provider
 - 写入后展示最终配置让用户确认
 - variants 尽量完整配置，包含 medium/high/xhigh/max 等常见级别
+
+---
+
+## 额外步骤：更新 OhMyOpenAgent Model Routing
+
+添加 Provider/Model 后，`opencode.json` 的变更**不会自动同步**到 `oh-my-openagent.json`。
+
+`oh-my-openagent.json` 是控制 agent model routing 的独立文件（OhMyOpenAgent 插件实际使用它做模型分发），而 `opencode.json` 的 `provider` 段只是定义模型本身。**两者各自独立生效。**
+
+### 何时需要更新 oh-my-openagent.json
+
+| 场景 | 需要更新？ |
+|------|-----------|
+| 只是新增一个 provider，不改 agent 路由 | ❌ 不需要 |
+| 新增 model 后想分配给某些 agent 使用 | ✅ 需要更新 agent 的 `model` 或 `fallback_models` |
+| 新增 provider 后想把部分 agent 切过去 | ✅ 需要更新对应 agent 的 `model` 字段 |
+
+### 操作方式
+
+更新完成后，询问用户：「是否需要将新加的 model/provider 配置到某些 agent 的 model routing？如果需要，要更新哪些 agent？」
+
+如需更新：
+1. 读取 `~/.config/opencode/oh-my-openagent.json`
+2. 找到对应 agent 的 `model` 或 `fallback_models` 字段
+3. 写入新的 `{provider}/{model_id}` 格式引用
+4. 验证 JSON 合法性
+
+### 同步提醒
+
+配置更新后建议执行 `sync-dot push` 将本地配置同步到 dot 仓库。
