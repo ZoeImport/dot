@@ -239,6 +239,7 @@
       "disable": true
     },
     "build": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
@@ -255,31 +256,34 @@
       ]
     },
     "deep": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
-        "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
+        "tag-native/claude-opus-4-7",
         "tag-native/claude-sonnet-4-6"
-      ],
-      "model": "tag-native/gpt-5.4"
+      ]
     },
     "ultrabrain": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "tag-native/claude-opus-4-7",
         "deepseek/deepseek-v4-flash",
+        "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
     },
     "visual-engineering": {
+      "model": "tag-native/claude-opus-4-7",
       "fallback_models": [
-        "tag-native/claude-opus-4-7",
+        "unlimited/deepseek-v4-flash",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
     },
     "quick": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
@@ -292,8 +296,8 @@
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
-        "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
+        "tag-native/claude-opus-4-7",
         "tag-native/claude-sonnet-4-6"
       ]
     },
@@ -307,6 +311,7 @@
       ]
     },
     "sisyphus-junior": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
@@ -326,6 +331,7 @@
       ]
     },
     "metis": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
@@ -333,6 +339,7 @@
       ]
     },
     "momus": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
@@ -340,8 +347,9 @@
       ]
     },
     "multimodal-looker": {
+      "model": "tag-native/claude-sonnet-4-6",
       "fallback_models": [
-        "tag-native/claude-sonnet-4-6",
+        "unlimited/deepseek-v4-flash",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4"
       ]
