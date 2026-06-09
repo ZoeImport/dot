@@ -56,18 +56,26 @@ uname -s | grep -qi mingw && echo windows
    rsync -av --delete <local_skills>/ <dot_skills>/
    ```
 3. 同步配置文件（逐个 cp）
-4. 进入 dot 仓库：
+4. **🔐 过滤密钥** — 对所有 JSON 配置执行密钥脱敏处理：
+   - 扫描 `opencode.json` 和 `oh-my-openagent.json` 中所有字段
+   - 匹配以下 key 名称（大小写不敏感）的值，替换为占位符：
+     - `apiKey` / `api_key` → `"xxx"`
+     - `token` / `secret` / `password` / `auth` → `"xxx"`
+     - 包含 `figma` 且匹配上述规则的 → `"******"`
+   - 已有 `"xxx"` 或 `"******"` 占位符的不重复处理
+   - 确保 dot 仓库中**不会出现任何真实密钥**
+5. 进入 dot 仓库：
    ```bash
    cd ~/CodeSpace/dot
    ```
-5. 收集变更摘要（`git diff --stat` + `git status --short` + `git diff --name-status`）
-6. 检查未跟踪文件
-7. 构建 commit message，包含：
+6. 收集变更摘要（`git diff --stat` + `git status --short` + `git diff --name-status`）
+7. 检查未跟踪文件
+8. 构建 commit message，包含：
    - OS、发行版（`lsb_release -d`）、主机名（`hostname`）
    - 每条变更的文件名与状态
    - 时间戳
    - 本地与 dot 的关键差异说明
-8. git add + commit + push
+9. git add + commit + push
 
 **Commit message 模板**：
 ```
@@ -84,13 +92,46 @@ Dot SHA: <before> → <after>
 - <关键差异>
 ```
 
+**密钥过滤脚本参考（Python）：**
+```python
+import json
+
+def redact_secrets(obj, path=""):
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            key_lower = k.lower()
+            secret_fields = ['apikey', 'api_key', 'token', 'secret', 'password', 'auth']
+            if any(kw in key_lower for kw in secret_fields):
+                if isinstance(v, str) and v not in ('xxx', '******', ''):
+                    obj[k] = '******' if 'figma' in key_lower else 'xxx'
+            else:
+                redact_secrets(v, f"{path}.{k}")
+    elif isinstance(obj, list):
+        for item in obj:
+            redact_secrets(item, path)
+    return obj
+```
+
 ### pull（dot 仓库 → 本地）
 
 1. `cd ~/CodeSpace/dot && git pull`
 2. 反向 rsync skills 到本地
 3. cp 配置文件到本地
 4. 验证：`diff -rq <dot_skills> <local_skills>`
-5. 输出恢复摘要
+5. **🔑 检查并补全 API Key** — 扫描本地配置中被脱敏的密钥字段，逐个提示用户：
+
+   扫描逻辑：
+   - 递归遍历 `opencode.json`，找出所有值为 `"xxx"` 或 `"******"` 的字段
+   - 通过字段名和上下文判断该密钥属于哪个 provider/MCP
+
+   对每个缺失密钥，向用户提问：
+   > 「`{provider}.{field}` 的密钥当前为占位符，请输入真实密钥（或输入 `skip` 跳过）」
+
+   **特殊情况处理：**
+   - 如果用户输入 `skip`，保留占位符（该供应商不可用但不影响其他功能）
+   - 如果整个 provider 的 apiKey 被跳过，可进一步询问：「是否需要从配置中移除该 provider？」
+   - 用户输入的密钥直接写入本地文件，**不会回传到 dot 仓库**
+6. 输出恢复摘要，报告每个 provider 的状态（已配置/已跳过）
 
 ---
 
