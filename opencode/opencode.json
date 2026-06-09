@@ -1,7 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
-    "opencode-worktree@latest",
     "superpowers@git+https://github.com/obra/superpowers.git",
     "oh-my-openagent@latest"
   ],
@@ -189,11 +188,37 @@
             "context": 262144,
             "output": 4096
           }
+        },
+        "deepseek-v4-flash": {
+          "name": "DeepSeek V4 Flash (unlimited)",
+          "limit": {
+            "context": 1000000,
+            "output": 384000
+          },
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "medium": {
+              "effort": "medium"
+            },
+            "high": {
+              "effort": "high"
+            },
+            "max": {
+              "effort": "max"
+            }
+          }
         }
       }
     }
   },
-  "mcp": {
+    "mcp": {
     "figma": {
       "type": "local",
       "command": [
@@ -221,10 +246,10 @@
       ]
     },
     "oracle": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
-        "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
@@ -264,7 +289,7 @@
     "atlas": {
       "mode": "subagent",
       "description": "Plan Executor - executes implementation plans task by task",
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
@@ -273,6 +298,7 @@
       ]
     },
     "sisyphus": {
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
@@ -291,9 +317,8 @@
       "color": "#FF5722",
       "mode": "primary",
       "description": "Plan agent for complex multi-step tasks. Consult Prometheus first before implementation. (Prometheus - OhMyOpenCode)",
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-opus-4-7",
