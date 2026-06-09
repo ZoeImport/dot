@@ -10,7 +10,7 @@
       "name": "Tag (ath)",
       "options": {
         "baseURL": "https://tag.airaphe.com",
-        "apiKey": "xxx"
+        "apiKey": "sk-U6nR_O8kovh4GEBvZr18ZX-qMxdxGoJV4K6M7Mug7tY"
       },
       "models": {
         "claude-opus-4-6": {
@@ -144,7 +144,7 @@
       "name": "DeepSeek Official",
       "options": {
         "baseURL": "https://api.deepseek.com/v1",
-        "apiKey": "xxx"
+        "apiKey": "sk-1fba73c5b8ab47979d1553a3d803bec4"
       },
       "models": {
         "deepseek-v4-flash": {
@@ -179,7 +179,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "options": {
         "baseURL": "https://api.yygu.cn/v3/llm.chat",
-        "apiKey": "xxx"
+        "apiKey": "yg-df95fc4f3dff869f6c61b87145011fe5"
       },
       "models": {
         "aliyun/kimi-k2.6": {

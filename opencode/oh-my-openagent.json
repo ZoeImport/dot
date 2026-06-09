@@ -13,11 +13,11 @@
       ]
     },
     "oracle": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "unlimited/deepseek-v4-flash",
       "variant": "max",
       "fallback_models": [
-        "tag-native/claude-opus-4-7",
         "deepseek/deepseek-v4-flash",
+        "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
       ]
@@ -53,10 +53,9 @@
       ]
     },
     "prometheus": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "unlimited/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-opus-4-7",
@@ -84,10 +83,9 @@
       ]
     },
     "atlas": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "unlimited/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
@@ -104,10 +102,9 @@
       ]
     },
     "sisyphus": {
-      "model": "deepseek/deepseek-v4-flash",
+      "model": "unlimited/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
