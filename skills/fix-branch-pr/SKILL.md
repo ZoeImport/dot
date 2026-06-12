@@ -1,3 +1,8 @@
+---
+name: fix-branch-pr
+description: 自动检测目标分支、创建 fix 分支、完成改动后提交推送并创建 PR。
+---
+
 # Skill: fix-branch-pr
 
 # 修复缺陷分支工作流

@@ -1,6 +1,6 @@
 ---
 name: unit-test-generate
-description: "根据 TestSpec 注释标签生成完备的 Go 单元测试，包含子测试、断言、复杂度评估、基准测试及完整测试文档。适用 dotpen-api 项目。当用户要求"写单元测试"、"补充测试"、"generate tests"、"生成测试"、"加测试"、"补测试"时触发。"
+description: 根据 TestSpec 注释标签生成完备的 Go 单元测试，包含子测试、断言、复杂度评估、基准测试及完整测试文档。适用 dotpen-api 项目。当用户要求写单元测试、补充测试、generate tests、生成测试时触发。
 ---
 
 # Unit Test Generate — 基于 TestSpec 的 Go 单元测试生成

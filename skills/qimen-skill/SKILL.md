@@ -1,3 +1,8 @@
+---
+name: qimen-skill
+description: 奇门遁甲 (Qi Men Dun Jia) 排盘计算引擎知识库。用于奇门遁甲运算的相关任务。
+---
+
 # 奇门遁甲 (Qi Men Dun Jia) Agent Skill
 
 > A comprehensive knowledge document for AI agents to understand and work with the Qi Men Dun Jia divination system and its calculation engine.

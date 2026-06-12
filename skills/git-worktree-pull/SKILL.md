@@ -1,3 +1,8 @@
+---
+name: git-worktree-pull
+description: 在指定 git worktree 中拉取新代码。支持选择已有 worktree 或新建 worktree，然后拉取指定分支的最新代码。
+---
+
 # Skill: git-worktree-pull
 
 在指定 git worktree 中拉取新代码。支持选择已有 worktree 或新建 worktree，然后拉取指定分支的最新代码。

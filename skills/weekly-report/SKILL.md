@@ -1,3 +1,8 @@
+---
+name: weekly-report
+description: 根据 GitLab 提交自动生成周报，当用户说"写周报"、"生成周报"、"总结本周工作"、"weekly report"时使用。
+---
+
 # Weekly Report — 周报生成技能
 
 根据 GitLab 提交自动生成周报。

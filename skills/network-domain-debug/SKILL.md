@@ -1,3 +1,8 @@
+---
+name: network-domain-debug
+description: 排查域名网络问题并优化 Clash/Mihomo 规则的完整流程。当用户遇到域名访问慢、API超时、网络延迟等问题时使用。
+---
+
 # Network Domain Debug Skill
 
 排查域名网络问题并优化 Clash/Mihomo 规则的完整流程。

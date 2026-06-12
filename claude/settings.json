@@ -1,0 +1,65 @@
+{
+  "env": {
+    "ANTHROPIC_BASE_URL": "https://api.99ai.uk/",
+    "ANTHROPIC_API_KEY": "xxx",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+  },
+  "fallbackModel": [
+    "sonnet",
+    "haiku"
+  ],
+  "availableModels": [
+    "opus",
+    "sonnet",
+    "haiku"
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Hello Miss! Welcome back to Claude Code! Ready to assist you today'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Miss! Before commit, remember to run: opencode skill reviewcode <file>'",
+            "if": "Bash(git commit -m *|git commit -am *)"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "gopls-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "firecrawl@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "figma@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "chrome-devtools-mcp@claude-plugins-official": true,
+    "gitlab@claude-plugins-official": true,
+    "remember@claude-plugins-official": false
+  },
+  "tui": "fullscreen",
+  "theme": "custom:dracula"
+}
