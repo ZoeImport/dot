@@ -1,65 +1,93 @@
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "https://api.99ai.uk/",
-    "ANTHROPIC_API_KEY": "xxx",
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1"
+    "ANTHROPIC_BASE_URL": "xxx",
+    "ANTHROPIC_API_KEY": "xxx"
   },
-  "fallbackModel": [
-    "sonnet",
-    "haiku"
-  ],
-  "availableModels": [
-    "opus",
-    "sonnet",
-    "haiku"
-  ],
+  "permissions": {
+    "allow": [
+      "mcp__codegraph__*"
+    ]
+  },
+  "model": "claude-sonnet-4-6",
   "hooks": {
-    "SessionStart": [
+    "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Hello Miss! Welcome back to Claude Code! Ready to assist you today'"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Miss! Before commit, remember to run: opencode skill reviewcode <file>'",
-            "if": "Bash(git commit -m *|git commit -am *)"
+            "command": "codegraph prompt-hook"
           }
         ]
       }
     ]
   },
-  "enabledPlugins": {
-    "gopls-lsp@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "claude-md-management@claude-plugins-official": true,
-    "firecrawl@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true,
-    "feature-dev@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": true,
-    "security-guidance@claude-plugins-official": true,
-    "commit-commands@claude-plugins-official": true,
-    "claude-code-setup@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "chrome-devtools-mcp@claude-plugins-official": true,
-    "gitlab@claude-plugins-official": true,
-    "remember@claude-plugins-official": false
+  "worktree": {
+    "baseRef": "fresh"
   },
-  "tui": "fullscreen",
-  "theme": "custom:dracula"
+  "enabledPlugins": {
+    "ponytail@ponytail": true
+  },
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/DietrichGebert/ponytail.git"
+      }
+    }
+  },
+  "theme": "dark-daltonized",
+  "editorMode": "normal",
+  "verbose": true,
+  "mcpServers": {
+    "codegraph": {
+      "command": "codegraph",
+      "args": [
+        "serve",
+        "--mcp"
+      ]
+    },
+    "pg-exambank-prod": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://exam_bank_rw:S5JTeMqCdUAeI7_rl@bj-postgres-44arzn5y.sql.tencentcdb.com:22311/exam_bank?sslmode=disable&TimeZone=Asia/Shanghai"
+      ]
+    },
+    "pg-exambank": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://test_rw:d1f4G2_f_3b1d4b3e5@bj-postgres-oudepn56.sql.tencentcdb.com:20922/exambank_test?sslmode=disable&TimeZone=Asia/Shanghai"
+      ]
+    },
+    "pg-daoxuequest": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://haojie:MwFAtiycL_2ehPkhY@bj-postgres-oudepn56.sql.tencentcdb.com:20922/daoxue_quest?sslmode=disable&TimeZone=Asia/Shanghai"
+      ]
+    },
+    "mysql-dotpen": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@berthojoris/mcp-mysql-server",
+        "mysql://dotpen_test_rw:u1jsdd6o518z16fs@bj-cdb-9qndmhm6.sql.tencentcdb.com:25201/dotpen_test",
+        "list,read,utility"
+      ]
+    },
+    "mysql-yygu": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@berthojoris/mcp-mysql-server",
+        "mysql://yygu_test_rw:vhc99v3dcxico74h@bj-cdb-feu2hlj6.sql.tencentcdb.com:63807/yygu_test",
+        "list,read,utility"
+      ]
+    }
+  },
+  "effortLevel": "medium"
 }

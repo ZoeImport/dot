@@ -2,148 +2,15 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "superpowers@git+https://github.com/obra/superpowers.git",
-    "oh-my-openagent@latest"
+    "oh-my-openagent@latest",
+    "/Users/zoe/ponytail/.opencode/plugins/ponytail.mjs"
   ],
   "provider": {
-    "tag-native": {
-      "npm": "@ai-sdk/anthropic",
-      "name": "Tag (ath)",
-      "options": {
-        "baseURL": "https://tag.airaphe.com",
-        "apiKey": "xxx"
-      },
-      "models": {
-        "claude-opus-4-6": {
-          "name": "Claude Opus 4.6 (ath)",
-          "limit": {
-            "context": 1000000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "medium": {
-              "effort": "medium"
-            },
-            "high": {
-              "effort": "high"
-            },
-            "xhigh": {
-              "effort": "xhigh"
-            },
-            "max": {
-              "effort": "max"
-            }
-          }
-        },
-        "claude-opus-4-7": {
-          "name": "Claude Opus 4.7 (ath)",
-          "limit": {
-            "context": 1000000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "medium": {
-              "effort": "medium"
-            },
-            "high": {
-              "effort": "high"
-            },
-            "xhigh": {
-              "effort": "xhigh"
-            },
-            "max": {
-              "effort": "max"
-            }
-          }
-        },
-        "claude-sonnet-4-6": {
-          "name": "Claude Sonnet 4.6 (ath)",
-          "limit": {
-            "context": 1000000,
-            "output": 64000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "medium": {
-              "effort": "medium"
-            },
-            "high": {
-              "effort": "high"
-            },
-            "xhigh": {
-              "effort": "xhigh"
-            },
-            "max": {
-              "effort": "max"
-            }
-          }
-        },
-        "gpt-5.5": {
-          "name": "GPT-5.5 (ath)",
-          "limit": {
-            "context": 1050000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        },
-        "gpt-5.4": {
-          "name": "GPT-5.4 (ath)",
-          "limit": {
-            "context": 1050000,
-            "output": 128000
-          },
-          "modalities": {
-            "input": [
-              "text",
-              "image",
-              "pdf"
-            ],
-            "output": [
-              "text"
-            ]
-          }
-        }
-      }
-    },
     "deepseek": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "DeepSeek Official",
       "options": {
-        "baseURL": "https://api.deepseek.com/v1",
+        "baseURL": "xxx",
         "apiKey": "xxx"
       },
       "models": {
@@ -178,7 +45,7 @@
     "unlimited": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "https://api.yygu.cn/v3/llm.chat",
+        "baseURL": "xxx",
         "apiKey": "xxx"
       },
       "models": {
@@ -227,8 +94,55 @@
         "figma-mcp"
       ],
       "environment": {
-        "FIGMA_API_KEY": "******"
+        "FIGMA_API_KEY": "xxx"
       }
+    },
+    "pg-exambank": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://test_rw:d1f4G2_f_3b1d4b3e5@bj-postgres-41lsxpzg.sql.tencentcdb.com:29127/exambank_test?sslmode=disable&TimeZone=Asia/Shanghai"
+      ]
+    },
+    "pg-daoxuequest": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://haojie:MwFAtiycL_2ehPkhY@bj-postgres-41lsxpzg.sql.tencentcdb.com:29127/daoxue_quest?sslmode=disable&TimeZone=Asia/Shanghai"
+      ]
+    },
+    "mysql-dotpen": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@berthojoris/mcp-mysql-server",
+        "mysql://dotpen_test_rw:u1jsdd6o518z16fs@bj-cdb-9qndmhm6.sql.tencentcdb.com:25201/dotpen_test",
+        "list,read,utility"
+      ]
+    },
+    "mysql-yygu": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@berthojoris/mcp-mysql-server",
+        "mysql://yygu_test_rw:vhc99v3dcxico74h@bj-cdb-feu2hlj6.sql.tencentcdb.com:63807/yygu_test",
+        "list,read,utility"
+      ]
+    },
+    "codegraph": {
+      "type": "local",
+      "command": [
+        "codegraph",
+        "serve",
+        "--mcp"
+      ],
+      "enabled": true
     }
   },
   "agent": {
@@ -241,53 +155,37 @@
     "build": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "oracle": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/claude-opus-4-7",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "deep": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-opus-4-7",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "ultrabrain": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/claude-opus-4-7",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "visual-engineering": {
-      "model": "tag-native/claude-opus-4-7",
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "unlimited/deepseek-v4-flash",
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "quick": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "atlas": {
@@ -295,27 +193,19 @@
       "description": "Plan Executor - executes implementation plans task by task",
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-opus-4-7",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "sisyphus": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/claude-opus-4-7",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "sisyphus-junior": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "prometheus": {
@@ -324,34 +214,25 @@
       "description": "Plan agent for complex multi-step tasks. Consult Prometheus first before implementation. (Prometheus - OhMyOpenCode)",
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-opus-4-7",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "metis": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "momus": {
       "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
+        "deepseek/deepseek-v4-flash"
       ]
     },
     "multimodal-looker": {
-      "model": "tag-native/claude-sonnet-4-6",
+      "model": "unlimited/deepseek-v4-flash",
       "fallback_models": [
-        "unlimited/deepseek-v4-flash",
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4"
+        "deepseek/deepseek-v4-flash"
       ]
     }
   }

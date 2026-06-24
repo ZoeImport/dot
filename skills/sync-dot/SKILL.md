@@ -71,17 +71,19 @@ uname -s | grep -qi mingw && echo windows
    cp ~/.claude/settings.json ~/CodeSpace/dot/claude/settings.json
    ```
 3.6 **过滤密钥** — 对 Claude settings.json 执行密钥脱敏：
-   - 扫描 `claude/settings.json` 中 `env` 段的 `ANTHROPIC_API_KEY` 字段
-   - 如果值不是 `"xxx"`，替换为 `"xxx"`
-   - 注意：baseURL 不需要脱敏，只脱敏 key 类字段
+   - 扫描 `claude/settings.json` 中 `env` 段，替换以下字段为 `"xxx"`：
+     - `ANTHROPIC_API_KEY`
+     - `ANTHROPIC_BASE_URL`（第三方 API 地址属于保密信息）
+   - 已有 `"xxx"` 占位符的不重复处理
 4. **🔐 过滤密钥** — 对所有 JSON 配置执行密钥脱敏处理：
    - 扫描 `opencode.json` 和 `oh-my-openagent.json` 中所有字段
    - 匹配以下 key 名称（大小写不敏感）的值，替换为占位符：
      - `apiKey` / `api_key` → `"xxx"`
+     - `baseURL` / `base_url` → `"xxx"`（API 地址同样保密）
      - `token` / `secret` / `password` / `auth` → `"xxx"`
      - 包含 `figma` 且匹配上述规则的 → `"******"`
    - 已有 `"xxx"` 或 `"******"` 占位符的不重复处理
-   - 确保 dot 仓库中**不会出现任何真实密钥**
+   - 确保 dot 仓库中**不会出现任何真实密钥或 API 地址**
 5. 进入 dot 仓库：
    ```bash
    cd ~/CodeSpace/dot
