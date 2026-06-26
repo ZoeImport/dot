@@ -1,31 +1,23 @@
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "xxx",
-    "ANTHROPIC_API_KEY": "xxx"
+    "ANTHROPIC_BASE_URL": "https://api.99ai.uk",
+    "ANTHROPIC_API_KEY": "xxx",
+    "ENABLE_LSP_TOOL": "1"
   },
-  "permissions": {
-    "allow": [
-      "mcp__codegraph__*"
-    ]
-  },
-  "model": "claude-sonnet-4-6",
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "codegraph prompt-hook"
-          }
-        ]
-      }
-    ]
-  },
+  "model": "sonnet",
   "worktree": {
     "baseRef": "fresh"
   },
+  "statusLine": {
+    "type": "command",
+    "command": "ccstatusline",
+    "padding": 0,
+    "refreshInterval": 10
+  },
   "enabledPlugins": {
-    "ponytail@ponytail": true
+    "ponytail@ponytail": true,
+    "gopls-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "ponytail": {
@@ -35,17 +27,13 @@
       }
     }
   },
-  "theme": "dark-daltonized",
+  "language": "简体中文",
+  "effortLevel": "high",
+  "awaySummaryEnabled": false,
+  "theme": "dark-ansi",
   "editorMode": "normal",
   "verbose": true,
   "mcpServers": {
-    "codegraph": {
-      "command": "codegraph",
-      "args": [
-        "serve",
-        "--mcp"
-      ]
-    },
     "pg-exambank-prod": {
       "command": "npx",
       "args": [
@@ -88,6 +76,5 @@
         "list,read,utility"
       ]
     }
-  },
-  "effortLevel": "medium"
+  }
 }

@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
     "hephaestus": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -12,7 +12,7 @@
       ]
     },
     "oracle": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "max",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -22,7 +22,7 @@
       ]
     },
     "librarian": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -31,7 +31,7 @@
       ]
     },
     "explore": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -50,7 +50,7 @@
       ]
     },
     "prometheus": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -60,7 +60,7 @@
       ]
     },
     "metis": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -69,7 +69,7 @@
       ]
     },
     "momus": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -78,7 +78,7 @@
       ]
     },
     "atlas": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -87,7 +87,7 @@
       ]
     },
     "sisyphus-junior": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -96,7 +96,7 @@
       ]
     },
     "sisyphus": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -106,7 +106,7 @@
       ]
     },
     "deep": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -116,7 +116,7 @@
       ]
     },
     "ultrabrain": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "max",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -126,7 +126,7 @@
       ]
     },
     "build": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -148,7 +148,7 @@
       ]
     },
     "ultrabrain": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "max",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -158,7 +158,7 @@
       ]
     },
     "deep": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -168,7 +168,7 @@
       ]
     },
     "artistry": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -177,7 +177,7 @@
       ]
     },
     "quick": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "low",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -186,7 +186,7 @@
       ]
     },
     "unspecified-low": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "low",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -195,7 +195,7 @@
       ]
     },
     "unspecified-high": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
@@ -204,7 +204,7 @@
       ]
     },
     "writing": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",

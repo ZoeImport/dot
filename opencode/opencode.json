@@ -10,7 +10,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "DeepSeek Official",
       "options": {
-        "baseURL": "xxx",
+        "baseURL": "https://api.deepseek.com/v1",
         "apiKey": "xxx"
       },
       "models": {
@@ -45,7 +45,7 @@
     "unlimited": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "xxx",
+        "baseURL": "https://api.yygu.cn/v3/llm.chat",
         "apiKey": "xxx"
       },
       "models": {
@@ -56,7 +56,7 @@
             "output": 4096
           }
         },
-        "deepseek-v4-flash": {
+        "deepseek/deepseek-v4-flash": {
           "name": "DeepSeek V4 Flash (unlimited)",
           "limit": {
             "context": 1000000,
@@ -134,15 +134,6 @@
         "mysql://yygu_test_rw:vhc99v3dcxico74h@bj-cdb-feu2hlj6.sql.tencentcdb.com:63807/yygu_test",
         "list,read,utility"
       ]
-    },
-    "codegraph": {
-      "type": "local",
-      "command": [
-        "codegraph",
-        "serve",
-        "--mcp"
-      ],
-      "enabled": true
     }
   },
   "agent": {
@@ -153,37 +144,37 @@
       "disable": true
     },
     "build": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "oracle": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "deep": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "ultrabrain": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "visual-engineering": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "quick": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
@@ -191,19 +182,19 @@
     "atlas": {
       "mode": "subagent",
       "description": "Plan Executor - executes implementation plans task by task",
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "sisyphus": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "sisyphus-junior": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
@@ -212,25 +203,25 @@
       "color": "#FF5722",
       "mode": "primary",
       "description": "Plan agent for complex multi-step tasks. Consult Prometheus first before implementation. (Prometheus - OhMyOpenCode)",
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "metis": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "momus": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
     },
     "multimodal-looker": {
-      "model": "unlimited/deepseek-v4-flash",
+      "model": "unlimited/deepseek/deepseek-v4-flash",
       "fallback_models": [
         "deepseek/deepseek-v4-flash"
       ]
