@@ -233,6 +233,54 @@ description: 对代码进行规范审查，按语言代码块分别分析。当�
 - 导出变量、函数、类型名须语义明确，一眼可辨识其用途；禁止仅用缩写或首字母缩略（如 `Pv` → `PromptVersion`、`Rt` → `Runtime`），除非缩写是业界公认惯例（如 `HTTP`、`SQL`、`JSON`、`DAO`）。
 - 非导出变量同样须语义清晰，禁止用 `x`、`y`、`tmp`、`data` 等无含义命名。
 
+### G-09b 优先复用现有结构并避免无效抽象 [Error]
+
+- 新增类型、构造函数或公共方法前，必须先检索标准库、已引入依赖和项目现有实现；已有结构或方法能够表达相同语义时，直接复用，禁止仅为当前场景复制一套近义 API。
+- 禁止创建仅用于逐字段搬运的 `Config`、`Options`、`Params` 等参数袋，再通过 `NewXxx` 原样构造已有目标结构。若没有默认值计算、约束校验、兼容转换或资源管理等独立职责，应在所属业务边界直接构造目标结构。
+- 只有一个生产调用点、函数体仅委托另一方法或返回其单个字段的 wrapper，应直接内联。复杂格式转换、重试策略、资源生命周期管理、稳定跨包契约等具有真实职责边界的方法不受此限制。
+- 抽取到 `pkgs/` 的公共能力必须保持场景无关的命名和接口。HTTP/文件读取类方法优先返回 `*http.Response`、`io.Reader` 或 `io.ReadCloser` 等底层对象，让调用方决定读取上限、解析方式并负责关闭资源；禁止用 `ReadMarkdownURL`、`GetAttachmentReader` 等名称把公共能力绑定到单一业务场景。
+- 新增 `pkgs/` 方法原则上应有两个及以上生产调用方，或能证明其提供稳定且必要的公共边界。仅为减少当前文件行数、只有一个调用点且可直接使用现有 API 的方法，不得提升为公共抽象。
+- Review 时重点检查：
+  1. `type XxxConfig/Options/Params struct` 的字段是否与目标结构高度重复。
+  2. `func NewXxx(...)` 是否只做字段复制，没有校验、默认值或转换。
+  3. 新增导出函数是否只有一个生产调用点，且函数体只是单层转发。
+  4. 新增 `pkgs/` 方法是否使用业务场景词命名，或替调用方固定了读取、截断、关闭等策略。
+
+**错误示例**：
+```go
+// 重复定义 task.Task 已有字段，NewParseTask 只负责搬运。
+type ParseTaskConfig struct {
+    FileID uint
+    Uin    uint
+}
+
+func NewParseTask(cfg ParseTaskConfig) *task.Task {
+    return &task.Task{SubjectID: cfg.FileID, Uin: cfg.Uin}
+}
+
+// 只有一个调用点，且只是丢弃 response 元数据的单层转发。
+func GetReader(ctx context.Context, url string) (io.ReadCloser, error) {
+    resp, err := Get(ctx, url)
+    if err != nil {
+        return nil, err
+    }
+    return resp.Body, nil
+}
+```
+
+**正确做法**：
+```go
+payload := &ragtask.TaskPayload{FileID: sourceID, Uin: uin}
+tsk := &task.Task{SubjectID: sourceID, Uin: uin, Payload: payload.String()}
+
+resp, err := httptools.Get(ctx, outputURL)
+if err != nil {
+    return err
+}
+defer resp.Body.Close()
+// 读取多少、如何解析由当前业务调用方决定。
+```
+
 ### G-10 默认实现范围与降级路径日志 [Warning]
 
 - 默认只按当前需求与已确认约定实现；禁止未经用户明确书面要求自行加入：实现退化/降级路径、额外的空值/历史兼容分支。
