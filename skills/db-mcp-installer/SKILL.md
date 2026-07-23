@@ -1,6 +1,6 @@
 ---
 name: db-mcp-installer
-description: Use when user mentions "连接数据库"、"database MCP"、"配置数据库"、"数据库 MCP"、"install database mcp"、"add database" or when project needs database access via MCP. Scans project for database connection strings and auto-configures the matching MCP server.
+description: Use only when the user wants to install, add, configure, modify, repair, or remove a database MCP server configuration, such as "安装数据库 MCP"、"配置数据库 MCP"、"更改数据库 MCP"、"修复数据库 MCP"、"install database mcp"、"add database mcp". Do not use for ordinary database queries, data inspection, or using an already-configured MCP. Scans project for database connection strings and auto-configures the matching MCP server.
 allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 ---
 
@@ -13,7 +13,7 @@ allowed-tools: Bash, Read, Write, Edit, Glob, Grep
 ## 检测流程
 
 ```
-用户提到"配数据库" / "数据库 MCP"
+用户明确要求安装、配置、修改或修复数据库 MCP
     │
     ├── 1. 扫描项目中的数据库连接
     │      ├── .env / .env.* → DATABASE_URL / DB_* / 等

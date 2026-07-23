@@ -1,17 +1,25 @@
-// Example: a real, end-to-end backend pipeline test that PASSED in production.
+// ==================== End-to-End Pipeline Test ====================
+// Link: exambank source question -> question_sync_fetch core_task
+//       -> worker+handler import -> local company question
+//       -> source knowledge mutation -> know_class_sync core_task
+//       -> local knowledge relation.
 //
-// Domain (illustrative): a knowledge-point sync chain spanning
-//   source DB (Postgres "exambank")  →  examapi HTTP service
-//   →  async task queue (core_task)  →  worker (fetch) + handler (import)
-//   →  business DB (MySQL "teacher").
+// Validation target: the real async sync path can repair an imported question
+//   whose local knowledge relation starts empty. After the source gains one
+//   knowledge point, a know_class_sync run must change the downstream relation
+//   from 0 -> 1 and preserve the test company boundary.
 //
-// What it proves: seed a source row WITHOUT knowledge → fetch+import job →
-// mutate the source to ADD knowledge → sync job → the downstream relation table
-// goes from 0 → 1 row. The whole thing is driven through the REAL async queue
-// and asserts the core_task lifecycle (pending → success), not just the data.
+// Real async queue: production task creators insert core_task rows. The online
+//   worker+handler consumes them; this test polls task lifecycle first, then
+//   polls data landing because callback writes can lag task success.
 //
-// Read this top-to-bottom: config is externalized, every phase is a numbered
-// STAGE, every wait is pipelinetest.Poll, every write is soft-deleted on cleanup.
+// Data safety: all writes use a dedicated test company and fresh source rows.
+//   Cleanup is soft-delete only; reusable reference knowledge rows are not
+//   modified or deleted.
+//
+// Run: requires source DB + business DB + Redis + online worker.
+//   go test ./path/to/package -run TestKnowClassSyncCorePipeline -v
+// ================================================================
 package devtask_test
 
 import (
@@ -80,7 +88,7 @@ func TestKnowClassSyncCorePipeline(t *testing.T) {
 		// SOFT delete our own seeded row — never hard-delete shared test data.
 		src.Exec("UPDATE exambank_question SET deleted_at = now() WHERE id = ?", examQID)
 	})
-	st.Begin("seeded source id=%d", examQID)
+	t.Logf("[pipeline] seeded source question id=%d external_id=%s", examQID, externalID)
 
 	// ── STAGE 2: enqueue fetch task, assert core_task lifecycle, await import ──
 	st.Begin("enqueue fetch task + await async import")
@@ -91,6 +99,7 @@ func TestKnowClassSyncCorePipeline(t *testing.T) {
 	t.Cleanup(func() { softDeleteTasksAfter(snap) })
 
 	fetchTask := newestTaskAfter(t, snap, "question_sync_fetch")
+	assert.Equal(t, pipelineCfg.CompanyID, fetchTask.CompanyID)
 	assert.Contains(t, fetchTask.Payload, externalID)
 	assert.False(t, fetchTask.IsFinished(), "freshly enqueued task must not be terminal")
 
@@ -106,7 +115,7 @@ func TestKnowClassSyncCorePipeline(t *testing.T) {
 			return id, id != 0
 		})
 	t.Cleanup(func() { softDeleteImported(localQID, pipelineCfg.CompanyID, externalID) })
-	st.Begin("imported local id=%d", localQID)
+	t.Logf("[pipeline] imported local question id=%d for company_id=%d", localQID, pipelineCfg.CompanyID)
 
 	// ── STAGE 3: assert the precondition — no knowledge yet ──
 	st.Begin("assert no knowledge before sync")
@@ -125,13 +134,18 @@ func TestKnowClassSyncCorePipeline(t *testing.T) {
 	assert.Equal(t, 1, created2)
 
 	syncTask := newestTaskAfter(t, snap2, "know_class_sync")
+	assert.Equal(t, pipelineCfg.CompanyID, syncTask.CompanyID)
+	assert.Contains(t, syncTask.Payload, fmt.Sprintf("%d", localQID))
 	syncDone := waitTaskTerminal(t, syncTask.ID, pipelineCfg.TaskTimeout)
 	assert.True(t, syncDone.IsSuccess(), "sync task should succeed: status=%s err=%s", syncDone.TaskStatus, syncDone.ErrMsg)
 
 	pipelinetest.Poll(t, pipelineCfg.DataTimeout, pipelineCfg.PollEvery,
 		"knowledge relation written", func() bool { return len(knowledgeRels(ctx, localQID)) > 0 })
 
-	st.Done("knowledge 0 → %d for local id=%d", len(knowledgeRels(ctx, localQID)), localQID)
+	finalKnowledgeRels := knowledgeRels(ctx, localQID)
+	assert.Len(t, finalKnowledgeRels, 1)
+	assert.Equal(t, pipelineCfg.KnowPointID, finalKnowledgeRels[0].KnowPointID)
+	st.Done("knowledge 0 -> %d for local id=%d", len(finalKnowledgeRels), localQID)
 }
 
 // examapiReachable POSTs a trivial query; false → skip the whole E2E.

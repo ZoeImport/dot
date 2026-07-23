@@ -1,23 +1,47 @@
 {
   "env": {
-    "ANTHROPIC_BASE_URL": "https://api.99ai.uk",
+    "ANTHROPIC_BASE_URL": "xxx",
     "ANTHROPIC_API_KEY": "xxx",
     "ENABLE_LSP_TOOL": "1"
   },
-  "model": "sonnet",
+  "permissions": {
+    "defaultMode": "acceptEdits"
+  },
+  "model": "sonnet[1m]",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/block-dangerous-commands.js"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/protect-secrets.js"
+          }
+        ]
+      }
+    ]
+  },
   "worktree": {
     "baseRef": "fresh"
   },
   "statusLine": {
     "type": "command",
-    "command": "ccstatusline",
-    "padding": 0,
-    "refreshInterval": 10
+    "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
     "ponytail@ponytail": true,
     "gopls-lsp@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "ponytail": {
@@ -28,53 +52,11 @@
     }
   },
   "language": "简体中文",
-  "effortLevel": "high",
+  "effortLevel": "medium",
   "awaySummaryEnabled": false,
-  "theme": "dark-ansi",
+  "skipDangerousModePermissionPrompt": true,
+  "theme": "light-daltonized",
   "editorMode": "normal",
   "verbose": true,
-  "mcpServers": {
-    "pg-exambank-prod": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "postgresql://exam_bank_rw:S5JTeMqCdUAeI7_rl@bj-postgres-44arzn5y.sql.tencentcdb.com:22311/exam_bank?sslmode=disable&TimeZone=Asia/Shanghai"
-      ]
-    },
-    "pg-exambank": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "postgresql://test_rw:d1f4G2_f_3b1d4b3e5@bj-postgres-oudepn56.sql.tencentcdb.com:20922/exambank_test?sslmode=disable&TimeZone=Asia/Shanghai"
-      ]
-    },
-    "pg-daoxuequest": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "postgresql://haojie:MwFAtiycL_2ehPkhY@bj-postgres-oudepn56.sql.tencentcdb.com:20922/daoxue_quest?sslmode=disable&TimeZone=Asia/Shanghai"
-      ]
-    },
-    "mysql-dotpen": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@berthojoris/mcp-mysql-server",
-        "mysql://dotpen_test_rw:u1jsdd6o518z16fs@bj-cdb-9qndmhm6.sql.tencentcdb.com:25201/dotpen_test",
-        "list,read,utility"
-      ]
-    },
-    "mysql-yygu": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@berthojoris/mcp-mysql-server",
-        "mysql://yygu_test_rw:vhc99v3dcxico74h@bj-cdb-feu2hlj6.sql.tencentcdb.com:63807/yygu_test",
-        "list,read,utility"
-      ]
-    }
-  }
+  "preferredNotifChannel": "kitty"
 }

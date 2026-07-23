@@ -1,0 +1,7 @@
+interface:
+  display_name: "BeautifyCodex"
+  short_description: "Maintain Codex config and migrations"
+  default_prompt: "Use $beatutifycodex to audit and synchronize my Codex CLI/Desktop skills, MCPs, plugins, and related agent configs."
+
+policy:
+  allow_implicit_invocation: true

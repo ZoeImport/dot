@@ -2,15 +2,14 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     "superpowers@git+https://github.com/obra/superpowers.git",
-    "oh-my-openagent@latest",
-    "/Users/zoe/ponytail/.opencode/plugins/ponytail.mjs"
+    "oh-my-openagent@latest"
   ],
   "provider": {
     "deepseek": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "DeepSeek Official",
       "options": {
-        "baseURL": "https://api.deepseek.com/v1",
+        "baseURL": "xxx",
         "apiKey": "xxx"
       },
       "models": {
@@ -45,7 +44,7 @@
     "unlimited": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "https://api.yygu.cn/v3/llm.chat",
+        "baseURL": "xxx",
         "apiKey": "xxx"
       },
       "models": {
@@ -80,6 +79,22 @@
             "max": {
               "effort": "max"
             }
+          }
+        },
+        "aliyun/qwen3.6-27b": {
+          "name": "Qwen3.6 27B (unlimited)",
+          "limit": {
+            "context": 262144,
+            "output": 32768
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
           }
         }
       }
