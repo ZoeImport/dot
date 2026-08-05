@@ -51,6 +51,15 @@
           }
         ],
         "matcher": "Read|Edit|Write|Bash"
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ~/.claude/hooks/vision-read-guard.js"
+          }
+        ]
       }
     ]
   },

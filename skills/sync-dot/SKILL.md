@@ -23,6 +23,12 @@ description: 同步本地 OpenCode、OhMyOpenAgent、Claude Code 配置与 skill
 | 2 | OpenCode 配置 | `~/.config/opencode/opencode.json` | `~/CodeSpace/dot/opencode/opencode.json` | `cp`（单文件） |
 | 3 | OhMyOpenAgent 配置 | `~/.config/opencode/oh-my-openagent.json` | `~/CodeSpace/dot/opencode/oh-my-openagent.json` | `cp`（单文件） |
 | 4 | Claude Code 配置 | `~/.claude/settings.json` | `~/CodeSpace/dot/claude/settings.json` | `cp`（单文件，需脱敏） |
+| 5 | Claude Code hooks | `~/.claude/hooks/` | `~/CodeSpace/dot/claude/hooks/` | `rsync --delete`（镜像，脚本含安全/规范逻辑，可跨机复用） |
+
+> **skills 软链说明（重要）**：本机 `~/.claude/skills` 是指向 `~/.agents/skills` 的软链（`ln -s ~/.agents/skills ~/.claude/skills`），Claude Code 与 OpenCode **共享同一份 skills**，因此：
+> - push/pull 只需处理 `~/.agents/skills/` ↔ `dot/skills/` 一条，无需再单独同步 claude skills
+> - **pull 后必须校验软链仍存在且指向正确**：`ls -lad ~/.claude/skills`（应为 `lrwxr-xr-x ... -> /Users/zoe/.agents/skills`）；若被覆盖成真实目录或丢失，执行 `ln -sfn ~/.agents/skills ~/.claude/skills` 重建
+> - 编辑任意一侧的 skill 即同时生效于两边（同一 inode）
 
 ### 平台路径差异
 
@@ -31,7 +37,7 @@ description: 同步本地 OpenCode、OhMyOpenAgent、Claude Code 配置与 skill
 | OS | Skills 路径 | OpenCode 配置路径 | Claude Code 配置路径 |
 |----|------------|-------------------|----------------------|
 | Linux | `~/.agents/skills/` | `~/.config/opencode/` | `~/.claude/settings.json` |
-| macOS (待确认) | `~/Library/Application Support/io.opencode/skills/` | `~/Library/Application Support/opencode/` | 待确认 |
+| macOS（实测 2026-08-05） | `~/.agents/skills/`（`~/.claude/skills` 软链指向此处） | `~/.config/opencode/` | `~/.claude/settings.json` |
 | Windows (待确认) | `%APPDATA%\opencode\skills\` | `%APPDATA%\opencode\` | 待确认 |
 
 OhMyOpenAgent 配置文件 `oh-my-openagent.json` 与 OpenCode 配置在同目录下，平台路径与上述 "OpenCode 配置路径" 相同。
@@ -75,6 +81,12 @@ uname -s | grep -qi mingw && echo windows
      - `ANTHROPIC_API_KEY`
      - `ANTHROPIC_BASE_URL`（第三方 API 地址属于保密信息）
    - 已有 `"xxx"` 占位符的不重复处理
+3.7 **同步 Claude Code hooks**（条目 5）：
+   ```bash
+   rsync -av --delete ~/.claude/hooks/ ~/CodeSpace/dot/claude/hooks/
+   ```
+   - hooks 为纯脚本（含 `lib/`），无密钥，不需要脱敏；同步前可 `grep -rniE "sk-[a-z0-9]{10,}|api[_-]?key" ~/.claude/hooks/` 快速自检
+   - 排除任何日志/状态目录（hooks 目录下不应出现 `*-logs` 等运行时产物）
 4. **🔐 过滤密钥** — 对所有 JSON 配置执行密钥脱敏处理：
    - 扫描 `opencode.json` 和 `oh-my-openagent.json` 中所有字段
    - 匹配以下 key 名称（大小写不敏感）的值，替换为占位符：
@@ -141,6 +153,14 @@ def redact_secrets(obj, path=""):
 5. **Claude Code 配置恢复**: 如果 `~/CodeSpace/dot/claude/settings.json` 存在，询问用户是否恢复：
    - 如果用户确认：`cp ~/CodeSpace/dot/claude/settings.json ~/.claude/settings.json`
    - 然后提示用户补全 ANTHROPIC_API_KEY
+5.5 **恢复 Claude Code hooks**（条目 5）：
+   ```bash
+   mkdir -p ~/.claude/hooks/
+   rsync -av --delete ~/CodeSpace/dot/claude/hooks/ ~/.claude/hooks/
+   ```
+5.6 **校验 skills 软链**（见上方"skills 软链说明"）：
+   - `ls -lad ~/.claude/skills` 应为软链且指向 `~/.agents/skills`
+   - 若被覆盖/丢失：`ln -sfn ~/.agents/skills ~/.claude/skills`
 6. **🔑 检查并补全 API Key** — 扫描本地配置中被脱敏的密钥字段，逐个提示用户：
 
    扫描逻辑：
