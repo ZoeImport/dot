@@ -1,20 +1,117 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "atlas": {
+      "description": "Plan Executor - executes implementation plans task by task",
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "mode": "subagent",
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "build": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "deep": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "explore": {
+      "disable": true
+    },
+    "general": {
+      "disable": true
+    },
+    "metis": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "momus": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "multimodal-looker": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "oracle": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "prometheus": {
+      "color": "#FF5722",
+      "description": "Plan agent for complex multi-step tasks. Consult Prometheus first before implementation. (Prometheus - OhMyOpenCode)",
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "mode": "primary",
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "quick": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "sisyphus": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "sisyphus-junior": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "ultrabrain": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    },
+    "visual-engineering": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash"
+    }
+  },
+  "mcp": {
+    "figma": {
+      "command": [
+        "npx",
+        "-y",
+        "figma-mcp"
+      ],
+      "environment": {
+        "FIGMA_API_KEY": "xxx"
+      },
+      "type": "local"
+    }
+  },
   "plugin": [
     "superpowers@git+https://github.com/obra/superpowers.git",
     "oh-my-openagent@latest"
   ],
   "provider": {
     "deepseek": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "DeepSeek Official",
-      "options": {
-        "baseURL": "xxx",
-        "apiKey": "xxx"
-      },
       "models": {
         "deepseek-v4-flash": {
-          "name": "DeepSeek V4 Flash (deepseek)",
           "limit": {
             "context": 1000000,
             "output": 384000
@@ -27,62 +124,37 @@
               "text"
             ]
           },
+          "name": "DeepSeek V4 Flash (deepseek)",
           "variants": {
-            "medium": {
-              "effort": "medium"
-            },
             "high": {
               "effort": "high"
             },
             "max": {
               "effort": "max"
+            },
+            "medium": {
+              "effort": "medium"
             }
           }
         }
+      },
+      "name": "DeepSeek Official",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "xxx",
+        "baseURL": "xxx"
       }
     },
     "unlimited": {
-      "npm": "@ai-sdk/openai-compatible",
-      "options": {
-        "baseURL": "xxx",
-        "apiKey": "xxx"
-      },
       "models": {
         "aliyun/kimi-k2.6": {
-          "name": "Kimi K2.6 (unlimited)",
           "limit": {
             "context": 262144,
             "output": 4096
-          }
-        },
-        "deepseek/deepseek-v4-flash": {
-          "name": "DeepSeek V4 Flash (unlimited)",
-          "limit": {
-            "context": 1000000,
-            "output": 384000
           },
-          "modalities": {
-            "input": [
-              "text"
-            ],
-            "output": [
-              "text"
-            ]
-          },
-          "variants": {
-            "medium": {
-              "effort": "medium"
-            },
-            "high": {
-              "effort": "high"
-            },
-            "max": {
-              "effort": "max"
-            }
-          }
+          "name": "Kimi K2.6 (unlimited)"
         },
         "aliyun/qwen3.6-27b": {
-          "name": "Qwen3.6 27B (unlimited)",
           "limit": {
             "context": 262144,
             "output": 32768
@@ -95,151 +167,41 @@
             "output": [
               "text"
             ]
+          },
+          "name": "Qwen3.6 27B (unlimited)"
+        },
+        "deepseek/deepseek-v4-flash": {
+          "limit": {
+            "context": 1000000,
+            "output": 384000
+          },
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "name": "DeepSeek V4 Flash (unlimited)",
+          "variants": {
+            "high": {
+              "effort": "high"
+            },
+            "max": {
+              "effort": "max"
+            },
+            "medium": {
+              "effort": "medium"
+            }
           }
         }
+      },
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "apiKey": "xxx",
+        "baseURL": "xxx"
       }
-    }
-  },
-  "mcp": {
-    "figma": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "figma-mcp"
-      ],
-      "environment": {
-        "FIGMA_API_KEY": "xxx"
-      }
-    },
-    "pg-exambank": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "postgresql://test_rw:d1f4G2_f_3b1d4b3e5@bj-postgres-41lsxpzg.sql.tencentcdb.com:29127/exambank_test?sslmode=disable&TimeZone=Asia/Shanghai"
-      ]
-    },
-    "pg-daoxuequest": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "postgresql://haojie:MwFAtiycL_2ehPkhY@bj-postgres-41lsxpzg.sql.tencentcdb.com:29127/daoxue_quest?sslmode=disable&TimeZone=Asia/Shanghai"
-      ]
-    },
-    "mysql-dotpen": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@berthojoris/mcp-mysql-server",
-        "mysql://dotpen_test_rw:u1jsdd6o518z16fs@bj-cdb-9qndmhm6.sql.tencentcdb.com:25201/dotpen_test",
-        "list,read,utility"
-      ]
-    },
-    "mysql-yygu": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@berthojoris/mcp-mysql-server",
-        "mysql://yygu_test_rw:vhc99v3dcxico74h@bj-cdb-feu2hlj6.sql.tencentcdb.com:63807/yygu_test",
-        "list,read,utility"
-      ]
-    }
-  },
-  "agent": {
-    "explore": {
-      "disable": true
-    },
-    "general": {
-      "disable": true
-    },
-    "build": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "oracle": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "deep": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "ultrabrain": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "visual-engineering": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "quick": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "atlas": {
-      "mode": "subagent",
-      "description": "Plan Executor - executes implementation plans task by task",
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "sisyphus": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "sisyphus-junior": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "prometheus": {
-      "color": "#FF5722",
-      "mode": "primary",
-      "description": "Plan agent for complex multi-step tasks. Consult Prometheus first before implementation. (Prometheus - OhMyOpenCode)",
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "metis": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "momus": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
-    },
-    "multimodal-looker": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash"
-      ]
     }
   }
 }

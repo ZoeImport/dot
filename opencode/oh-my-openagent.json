@@ -1,221 +1,224 @@
 {
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-openagent/dev/assets/oh-my-opencode.schema.json",
   "agents": {
-    "hephaestus": {
+    "atlas": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ],
       "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "high",
+      "variant": "medium"
+    },
+    "build": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "medium"
+    },
+    "deep": {
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-opus-4-7",
         "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "oracle": {
+      ],
       "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "max",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/claude-opus-4-7",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "librarian": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "medium",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
+      "variant": "high"
     },
     "explore": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
-      ]
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "medium"
+    },
+    "hephaestus": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-opus-4-7",
+        "tag-native/claude-sonnet-4-6"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "high"
+    },
+    "librarian": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "medium"
+    },
+    "metis": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "medium"
+    },
+    "momus": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "medium"
     },
     "multimodal-looker": {
-      "model": "tag-native/claude-sonnet-4-6",
-      "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-sonnet-4-6",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4"
-      ]
+      ],
+      "model": "tag-native/claude-sonnet-4-6",
+      "variant": "medium"
+    },
+    "oracle": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/claude-opus-4-7",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "max"
     },
     "prometheus": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-opus-4-7",
         "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "metis": {
+      ],
       "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "medium",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "momus": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "medium",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "atlas": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "medium",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "sisyphus-junior": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "medium",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
+      "variant": "high"
     },
     "sisyphus": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
-      ]
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "high"
     },
-    "deep": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "high",
+    "sisyphus-junior": {
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
-        "tag-native/claude-opus-4-7",
         "tag-native/claude-sonnet-4-6"
-      ]
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "medium"
     },
     "ultrabrain": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "max",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "build": {
+      ],
       "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "medium",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
+      "variant": "max"
     }
   },
   "categories": {
-    "visual-engineering": {
-      "model": "tag-native/claude-opus-4-7",
-      "variant": "high",
+    "artistry": {
       "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/claude-opus-4-7",
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "ultrabrain": {
+      ],
       "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "max",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/claude-opus-4-7",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
+      "variant": "high"
     },
     "deep": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-opus-4-7",
         "tag-native/claude-sonnet-4-6"
-      ]
-    },
-    "artistry": {
+      ],
       "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "high",
-      "fallback_models": [
-        "deepseek/deepseek-v4-flash",
-        "tag-native/gpt-5.4",
-        "tag-native/claude-sonnet-4-6"
-      ]
+      "variant": "high"
     },
     "quick": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "low",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
-      ]
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "low"
     },
-    "unspecified-low": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "low",
+    "ultrabrain": {
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
+        "tag-native/claude-opus-4-7",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
-      ]
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "max"
     },
     "unspecified-high": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "high",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
-      ]
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "high"
+    },
+    "unspecified-low": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "low"
+    },
+    "visual-engineering": {
+      "fallback_models": [
+        "deepseek/deepseek-v4-flash",
+        "tag-native/claude-opus-4-7",
+        "deepseek/deepseek-v4-flash",
+        "tag-native/gpt-5.4",
+        "tag-native/claude-sonnet-4-6"
+      ],
+      "model": "tag-native/claude-opus-4-7",
+      "variant": "high"
     },
     "writing": {
-      "model": "unlimited/deepseek/deepseek-v4-flash",
-      "variant": "medium",
       "fallback_models": [
         "deepseek/deepseek-v4-flash",
         "tag-native/gpt-5.4",
         "tag-native/claude-sonnet-4-6"
-      ]
+      ],
+      "model": "unlimited/deepseek/deepseek-v4-flash",
+      "variant": "medium"
     }
   },
   "model_fallback": true,
   "runtime_fallback": {
+    "cooldown_seconds": 60,
     "enabled": true,
+    "max_fallback_attempts": 10,
+    "notify_on_fallback": true,
     "retry_on_errors": [
       400,
       429,
@@ -225,9 +228,6 @@
       504,
       529
     ],
-    "max_fallback_attempts": 10,
-    "cooldown_seconds": 60,
-    "timeout_seconds": 30,
-    "notify_on_fallback": true
+    "timeout_seconds": 30
   }
 }
