@@ -1,0 +1,20 @@
+#!/bin/sh
+set -eu
+
+lab_dir=${LOCAL_COLIMA_LAB_DIR:-/Users/zoe/Documents/daily/docker-interview-lab}
+entrypoint=$lab_dir/lab
+
+if [ ! -x "$entrypoint" ] || [ ! -f "$lab_dir/services.yaml" ] || [ ! -f "$lab_dir/AGENTS.md" ]; then
+  echo "Local Colima Lab not found or incomplete: $lab_dir" >&2
+  echo "Set LOCAL_COLIMA_LAB_DIR to a directory containing lab, services.yaml, and AGENTS.md." >&2
+  exit 1
+fi
+
+case ${1:-help} in
+  path)
+    printf '%s\n' "$lab_dir"
+    ;;
+  *)
+    exec "$entrypoint" "$@"
+    ;;
+esac

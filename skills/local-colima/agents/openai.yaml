@@ -1,0 +1,4 @@
+interface:
+  display_name: "Local Colima"
+  short_description: "Run explicitly local Docker and kind workloads safely"
+  default_prompt: "Use $local-colima to prepare or run this Docker workload on my local Colima environment."
