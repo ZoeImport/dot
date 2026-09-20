@@ -321,23 +321,23 @@ Model routing logic (in `oh-my-openagent.json`): expensive models only for tasks
 
 ## Skills Included
 
+Only the skills below are currently installable. Retired skills live in `_archived-skills/` and are not installed.
+
 | Skill | Description |
 |-------|-------------|
-| `add-provider-model` | Add new AI provider or model to OpenCode config |
-| `agent-browser` | Browser automation CLI for AI agents |
-| `defect-handler` | Full bug analysis → fix workflow |
-| `deploy-service` | Deploy dotpen-api services (GitLab CI) |
-| `docx-template` | Generate DOCX with docxtemplater + raw XML |
-| `fix-branch-pr` | Auto-detect target, create fix branch, PR |
-| `git-commit-push-pr` | Commit → push → MR automation |
-| `git-worktree-pull` | Pull latest code in git worktree |
-| `md-to-docx-with-mermaid` | Convert markdown → docx with mermaid diagrams |
-| `network-domain-debug` | DNS/network troubleshooting |
-| `quick-db-read` | One-shot MySQL read via Go test |
-| `review-and-pr` | Code review + commit + PR in one flow |
-| `reviewcode` | Go code style review |
-| `sync-dot` | Sync local config → this dot repo |
-| `technical-solution-doc` | Generate tech design documents |
-| `unit-test-generate` | Generate unit tests |
-| `qimen-skill` | 奇门遁甲排盘 — 时家/日家 + 超神接气定局 + 历史趋势分析 |
-| `weekly-report` | Generate weekly report from GitLab commits |
+| `conductor` | Parallel multi-agent development orchestration |
+| `deploy-service` | Trigger any repository's own deployment CI (GitHub Actions / GitLab CI), reading environments and services live from that repo's CI definition |
+| `docx` | Create, read, edit Word documents |
+| `docx-template` | Generate DOCX programmatically with docxtemplater + raw XML |
+| `git-commit-push-pr` | Commit → push → open MR/PR, then deploy affected services |
+| `grill-me` | Short-form relentless interview to sharpen a plan |
+| `grilling` | Stress-test a plan, decision, or idea |
+| `md-to-docx-with-mermaid` | Convert markdown → docx with mermaid diagrams rendered as images |
+| `pdf` | Read, extract, merge, split, watermark, fill, OCR PDFs |
+| `pptx` | Create, read, edit PowerPoint decks |
+| `review-and-pr` | Code review → compile check → commit → PR in one flow |
+| `reviewcode` | Go code review: logging/traceability, error handling, abstraction, retry & timeouts, general quality |
+| `xlsx` | Create, read, edit spreadsheets and tabular data |
+
+Skills in this repository are the personal/public subset. Organization-scoped skills
+(JX platform lifecycle, CI/CD operations) live in the separate private `JUXON-AI/JX-dot`.

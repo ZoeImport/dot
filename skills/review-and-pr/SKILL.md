@@ -21,7 +21,7 @@ description: 整合代码审查与 Git 提交工作流 - 先执行 ReviewCode �
 
 ## 工作流程
 
-### 第一步：分支安全检查（G-14）
+### 第一步：分支安全检查
 
 1. **检查当前分支**
    ```bash
@@ -31,10 +31,8 @@ description: 整合代码审查与 Git 提交工作流 - 先执行 ReviewCode �
 
 2. **禁止直推的分支列表**
    - `main` / `master`（主干分支）
-   - `feature/*`（如 `feature/2.6`、`feature-2.0` 等）
-   - `release/*`（如 `release-2.4`、`dot-release-2.5` 等）
-   - `dot-release-*`（版本发布分支）
-   - 所有带 `release` 或 `feature` 关键词的长期维护分支
+   - `feature/*` / `release/*`（长期维护分支，命名因仓库而异，先看该仓库的分支列表）
+   - 所有带 `release` 或 `feature` 关键词的长期分支
 
 3. **分支安全规则**
    - 如果当前在禁止直推的分支：
@@ -57,27 +55,22 @@ description: 整合代码审查与 Git 提交工作流 - 先执行 ReviewCode �
 skill(name="reviewcode")
 ```
 
-审查要点（G-20 编译校验规则）：
-- 确认改动文件是否涉及多个 APP
-- 检查是否需要执行 `make local APP=<APP>` 和 `make generate-docs APP=<APP>`
+审查要点（编译校验）：
+- 确认改动涉及哪些可独立构建单元（多 app / 多 module / 前后端）
+- 确认该仓库的编译与代码生成命令（从它的 Makefile / AGENTS.md / README 读取）
 
 ### 第三步：执行编译校验
 
-根据 ReviewCode G-20 规则：
+按**目标仓库自己的**构建方式验证，命令从该仓库的 `Makefile` / `AGENTS.md` / `README.md` 实时确认，不要沿用其他仓库的目标名。
 
-1. **编译验证**（按涉及的 APP 分别执行）
+1. **编译验证**（改动涉及的每个可独立构建单元分别执行）
    ```bash
-   make local APP=dotteacher
-   make local APP=dottask
-   make local APP=dotworker
-   # ...
+   <该仓库的编译命令>     # 例如 make local APP=<APP> / go build ./... / pnpm build
    ```
 
-2. **文档生成**（如果修改了 DTO 或 handler 注解）
+2. **生成物更新**（如果修改了会参与代码生成的注解、schema 或 DTO）
    ```bash
-   make generate-docs APP=dotteacher
-   make generate-docs APP=dottask
-   # ...
+   <该仓库的生成命令>     # 例如 make generate-docs APP=<APP> / swag init / pnpm codegen
    ```
 
 3. **编译失败处理**
@@ -93,7 +86,7 @@ git status
 
 **必须排除的修改：**
 
-1. **`vendor/` 目录**（G-14）
+1. **`vendor/` 目录**
    - 只提交业务相关文件
    - 如有 vendor 变更，向用户确认是否需要提交（通常不需要）
 
@@ -126,8 +119,8 @@ git status
 # 只添加业务文件，排除 vendor
 git add <业务文件路径...>
 
-# 如果编译校验生成了新文件（如 docs），一并添加
-git add apps/<APP>/internal/docs/*_docs.go
+# 如果编译校验生成了新文件（如代码生成产物），一并添加
+git add <生成物路径>
 
 # 提交
 git commit -m "<commit message>"
@@ -161,8 +154,8 @@ glab mr create \
 
 ## Test
 编译验证：
-- `make local APP=xxx` ✅
-- `make generate-docs APP=xxx` ✅
+- `<该仓库的编译命令>` ✅
+- `<该仓库的生成命令>` ✅
 EOF
 )" \
   --assignee <username> \
@@ -185,8 +178,8 @@ gh pr create \
 
 ## Test
 编译验证：
-- `make local` ✅
-- `make generate-docs` ✅
+- `<该仓库的编译命令>` ✅
+- `<该仓库的生成命令>` ✅
 EOF
 )" \
   --assignee <username> \
@@ -207,8 +200,8 @@ EOF
 ```
 skill(review-and-pr)
   → skill(reviewcode)  # 加载审查规则
-  → make local APP=<APP>  # 编译验证
-  → make generate-docs APP=<APP>  # 文档生成
+  → <该仓库的编译命令>  # 编译验证
+  → <该仓库的生成命令>  # 生成物更新
   → git add / git commit  # 提交
   → git push  # 推送
   → glab mr create / gh pr create  # 创建 MR/PR
@@ -219,11 +212,11 @@ skill(review-and-pr)
 ## 注意事项
 
 1. **分支安全是第一步** - 严禁在主分支上直接提交或推送
-2. **编译校验必须通过** - 使用 `make local` 和 `make generate-docs`，禁止用 `go build ./...`
+2. **编译校验必须通过** - 用目标仓库自己的构建命令，不要沿用其他仓库的目标名
 3. **vendor 目录排除** - 提交前必须检查并排除
 4. **本地开发修改排除** - 硬编码 IP/端口、调试开关等不提交
-5. **文档生成文件一并提交** - `*_docs.go` 等生成物必须包含在提交中
-6. **PR 描述包含验证结果** - 明确列出编译验证通过的 APP
+5. **生成物一并提交** - 编译/代码生成产生的文件必须包含在提交中
+6. **PR 描述包含验证结果** - 写明执行了哪些编译与生成命令及其结果
 7. **遵循项目 commit 风格** - 查看 git log 了解格式
 
 ---
@@ -251,10 +244,9 @@ Agent:
 1. 检查当前分支 → 在 feature/2.6（需要切出新分支）
 2. 切出新分支 fix/dao-soft-delete-filter
 3. 加载 ReviewCode skill 审查代码
-4. 执行编译校验：
-   - make local APP=dotteacher ✅
-   - make local APP=dottask ✅
-   - make generate-docs APP=dotteacher ✅
+4. 执行编译校验（命令取自目标仓库）：
+   - <编译命令> ✅
+   - <生成命令> ✅
 5. 检查 vendor → 无变更
 6. 询问用户：commit message、PR 描述、@ 谁
 7. git add + git commit

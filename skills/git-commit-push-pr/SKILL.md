@@ -151,50 +151,22 @@ glab mr diff <id>  # 获取 MR 的变更文件列表
 
 #### B1. 文件 → 服务映射
 
-| 变更路径 | 影响服务 |
-|----------|----------|
-| `apps/account/...` | `account` |
-| `apps/dotteacher/...` | `dotteacher` |
-| `apps/dotstudent/...` | `dotstudent` |
-| `apps/dotworker/...` | `dotworker` |
-| `apps/dottask/...` | `dottask` |
-| `apps/dotinit/...` | `dotinit` |
-| `apps/dotpen/...` | `dotpen` |
-| `apps/dryang/...` | `dryang` |
-| `apps/aigc/...` 等 | `aiagents` / `chat` |
-| `pkgs/...` 或 `.gitlab-ci.yml` | **所有服务** |
+从 `glab mr diff <id>` 获取变更文件列表，结合目标仓库的目录结构和 `.gitlab-ci.yml` 推断受影响的服务。不同仓库的目录结构不同，不硬编码映射表。**不确定时询问用户。**
 
 #### B2. 服务依赖分析
 
-部分子服务被聚合到更大服务中，部署聚合服务即可包含子服务变更：
-
-| 子服务 | 被聚合到 | 说明 |
-|--------|----------|------|
-| `account` | `dotpen` | account 路由注册到 dotpen |
-| `dotteacher` | `dotpen` | dotteacher 路由注册到 dotpen |
-| `dotstudent` | `dotpen` | dotstudent 路由注册到 dotpen |
-| `dotmigration` | `dotpen` | 迁移逻辑 |
-| `dotinit` | （独立） | 独立部署 |
-| `dotworker` | （独立） | 独立部署 |
-| `dottask` | （独立） | 独立部署 |
-
-**简化规则：** 如果受影响的服务列表中同时包含 `account` / `dotteacher` / `dotstudent` 和 `dotpen`，只需保留 `dotpen`。
+如果目标仓库有服务聚合关系（某些子服务路由被另一个聚合服务统一挂载），从仓库文档或 `.gitlab-ci.yml` 了解后再判断，不在此预设。
 
 #### B3. 呈现给用户
 
-展示推断结果及简化建议，**如果不确定，问用户**：
+展示推断结果，**如果不确定，问用户**：
 
 ```
-根据 MR diff 分析，受影响的原始服务：
-  - account (apps/account/)
-  - dotteacher (apps/dotteacher/)
-  - dottask (apps/dottask/)
+根据 MR diff 分析，受影响的文件路径：
+  - <path1>
+  - <path2>
 
-依赖简化建议：
-  - account + dotteacher → 被 dotpen 聚合
-  - dottask → 独立部署
-
-最终建议部署：dotpen, dottask
+推断受影响的服务：<svc1>, <svc2>（不确定的已标注）
 是否按此执行？或手动调整？
 ```
 
@@ -209,12 +181,18 @@ glab mr diff <id>  # 获取 MR 的变更文件列表
 
 ### 步骤 D：执行部署
 
-目标分支使用 MR 的 `target_branch`（如 `feature/2.10`），并行触发：
+先按目标仓库自己的 CI 定义确认触发方式与参数名（GitLab 读 `.gitlab-ci.yml` 的 `spec.inputs`，GitHub 读 `.github/workflows/*`），**环境名与服务名一律实时读取，不要沿用其他仓库的取值**。目标分支使用 MR 的 `target_branch`（如 `feature/2.10`），并行触发：
 
 ```bash
-glab deploy-service <environment> <app> <target-branch>
-glab deploy-service <environment> <app2> <target-branch>
+# GitLab
+unset GITLAB_TOKEN GITLAB_ACCESS_TOKEN OAUTH_TOKEN
+glab ci run --input environment=<env> --input app=<app> --branch <target-branch>
+
+# GitHub
+gh workflow run <workflow-file> --ref <target-branch> -f app=<app> -f environment=<env>
 ```
+
+若目标仓库没有可触发的部署工作流，停下并告诉用户该仓库不支持从 CI 部署，不要猜测命令。
 
 ### 步骤 E：返回结果
 
@@ -223,20 +201,20 @@ glab deploy-service <environment> <app2> <target-branch>
 ```
 部署完成 🚀
 
-环境: test
-分支: feature/2.10
+环境: <environment>
+分支: <target-branch>
 
 执行命令:
-  glab deploy-service test dotpen feature/2.10
-  glab deploy-service test dottask feature/2.10
+  <实际执行的触发命令 1>
+  <实际执行的触发命令 2>
 
 服务列表:
-  - dotpen (聚合 account + dotteacher)
-  - dottask
+  - <svc1>
+  - <svc2>
 
-Pipelines:
-  - dotpen: Pipeline #6501 - https://git.yygu.cn/dotpen/dotpen-api/-/pipelines/6501
-  - dottask: Pipeline #6502 - https://git.yygu.cn/dotpen/dotpen-api/-/pipelines/6502
+Pipelines / Runs:
+  - <svc1>: #<id> - <url>
+  - <svc2>: #<id> - <url>
 ```
 
 ## 注意事项
@@ -256,7 +234,7 @@ Pipelines:
 用户: 提交当前改动并创建pr到feature/2.10，reviewer @morehao
 
 Agent:
-1. 检查改动：apps/dotteacher/ 3 files, apps/account/ 1 file
+1. 检查改动：<dir-a>/ 3 files, <dir-b>/ 1 file
 2. 询问：
    - commit message → 自动生成
    - PR 标题和描述 → 自动生成
@@ -276,12 +254,12 @@ Agent:
 
 Agent:
 1. glab mr view 796 → 已合并 ✅
-2. glab mr diff 796 → 变更文件 → 原始服务: account, dotteacher, dottask
-3. 依赖分析: account+dotteacher → dotpen 聚合, dottask 独立
-4. 建议部署: dotpen, dottask → 用户确认
-5. 执行:
-   glab deploy-service test dotpen feature/2.10
-   glab deploy-service test dottask feature/2.10
+2. glab mr diff 796 → 变更文件列表
+3. 结合仓库结构推断受影响服务，不确定时询问用户
+4. 建议部署: <svc1>, <svc2> → 用户确认
+5. 执行（命令形式取自目标仓库自己的 CI 定义）:
+   glab ci run --input environment=test --input app=<svc1> --branch feature/2.10
+   glab ci run --input environment=test --input app=<svc2> --branch feature/2.10
 6. 返回:
 
 部署完成 🚀
@@ -290,16 +268,12 @@ Agent:
 分支: feature/2.10
 
 执行命令:
-  glab deploy-service test dotpen feature/2.10
-  glab deploy-service test dottask feature/2.10
+  <实际执行的触发命令 1>
+  <实际执行的触发命令 2>
 
-服务列表:
-  - dotpen (聚合 account + dotteacher)
-  - dottask
-
-Pipelines:
-  - dotpen: Pipeline #6501 - https://git.yygu.cn/.../pipelines/6501
-  - dottask: Pipeline #6502 - https://git.yygu.cn/.../pipelines/6502
+Runs:
+  - <svc1>: #<id> - <url>
+  - <svc2>: #<id> - <url>
 ```
 
 ## 错误处理
