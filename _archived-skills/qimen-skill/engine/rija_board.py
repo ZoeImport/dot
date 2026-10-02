@@ -16,6 +16,7 @@ from typing import Dict, List
 from .models import RiJiaBoard, RI_JIA_STARS, HEI_HUANG_DAO
 from .calendar_core import (
     get_ganzhi_full,
+    normalize_datetime,
     get_ganzhi_day,
     is_yang_dun,
     TIAN_GAN,
@@ -48,6 +49,10 @@ YANG_XIU_MAP: Dict[str, int] = {
     "乙酉": 9, "己酉": 9,
 }
 
+YIN_XIU_MAP = {gz: 10 - gong for gz, gong in YANG_XIU_MAP.items()}
+YIN_TAI_YI_GONG_MAP = {"甲子": 2, "甲戌": 1, "甲申": 9, "甲午": 8, "甲辰": 7, "甲寅": 6}
+GONG_CW = [1, 8, 3, 4, 9, 2, 7, 6]
+
 # 四仲日地支 — used for 三日一宫 fallback logic
 SI_ZHONG_ZHI: set = {"子", "午", "卯", "酉"}
 
@@ -79,9 +84,9 @@ YANG_GAN: set = {"甲", "丙", "戊", "庚", "壬"}
 
 # 喜神方位
 XI_SHEN_MAP: Dict[str, str] = {
-    "甲": "艮(东北)", "乙": "乾(西北)", "丙": "坤(西南)", "丁": "离(南)",
-    "戊": "巽(东南)", "己": "震(东)", "庚": "巽(东南)", "辛": "离(南)",
-    "壬": "兑(西)", "癸": "震(东)",
+    "甲": "艮(东北)", "己": "艮(东北)", "乙": "乾(西北)", "庚": "乾(西北)",
+    "丙": "坤(西南)", "辛": "坤(西南)", "丁": "离(南)", "壬": "离(南)",
+    "戊": "巽(东南)", "癸": "巽(东南)",
 }
 
 # 天乙贵人: 甲戊庚牛羊(丑未), 乙己鼠猴乡(子申),
@@ -120,31 +125,21 @@ JIE_LU_KONG_WANG_MAP: Dict[str, tuple] = {
 # ============================================================
 
 def _next_clockwise(gong: int) -> int:
-    """Get next palace in clockwise (顺飞) order, skipping 中5宫.
-
-    顺飞: 1→2→3→4→6→7→8→9→1→...
-    """
-    n = gong % 9 + 1
-    return 6 if n == 5 else n
+    return GONG_CW[(GONG_CW.index(gong) + 1) % 8]
 
 
 def _next_counterclockwise(gong: int) -> int:
-    """Get next palace in counter-clockwise (逆飞) order, skipping 中5宫.
-
-    逆飞: 1→9→8→7→6→4→3→2→1→...
-    """
-    n = gong - 1 if gong > 1 else 9
-    return 4 if n == 5 else n
+    return GONG_CW[(GONG_CW.index(gong) - 1) % 8]
 
 
 # ============================================================
 # Section 1: 休门 Palace — 三日一宫
 # ============================================================
 
-def get_xiu_gong(ganzhi: str) -> int:
+def get_xiu_gong(ganzhi: str, is_yang: bool = True) -> int:
     """Find the 休门 palace for a given day ganzhi (三日一宫 rule).
 
-    For 四仲日 (子/午/卯/酉), looks up directly in YANG_XIU_MAP.
+    For 四仲日 (子/午/卯/酉), selects the Yang/Yin anchor table.
     For other days, walks backwards up to 3 days to find the nearest
     四仲日 anchor (休门 stays in the same palace for 3 consecutive days).
 
@@ -154,15 +149,18 @@ def get_xiu_gong(ganzhi: str) -> int:
     Returns:
         Palace number (1-9, never 5) where 休门 resides.
     """
-    if ganzhi in YANG_XIU_MAP:
-        return YANG_XIU_MAP[ganzhi]
+    mapping = YANG_XIU_MAP if is_yang else YIN_XIU_MAP
+    if ganzhi not in GANZHI_INDEX:
+        raise ValueError(f"Invalid ganzhi: {ganzhi}")
+    if ganzhi in mapping:
+        return mapping[ganzhi]
 
     idx = GANZHI_INDEX[ganzhi]
     for offset in range(1, 4):
         prev_idx = (idx - offset) % 60
         prev_gz = SIXTY_JIAZI[prev_idx]
         if prev_gz[1] in SI_ZHONG_ZHI:
-            return YANG_XIU_MAP[prev_gz]
+            return mapping[prev_gz]
 
     raise ValueError(f"Cannot find xiu gong for {ganzhi}")
 
@@ -171,25 +169,15 @@ def get_xiu_gong(ganzhi: str) -> int:
 # Section 2: 太乙 — 九星 starting palace
 # ============================================================
 
-def get_taiyi_gong(xun_shou: str, is_yang: bool) -> int:
-    """Find the 太乙 starting palace for a given 旬首.
+def get_taiyi_gong(ganzhi: str, is_yang: bool) -> int:
+    """太乙 follows the day within its 旬, numeric forward/reverse flying.
 
-    Uses the 九星太乙歌诀:
-        甲子→艮(8), 甲戌→离(9), 甲申→坎(1),
-        甲午→坤(2), 甲辰→震(3), 甲寅→巽(4)
-
-    The is_yang parameter is accepted for interface consistency with
-    the star placement logic; the 太乙 placement itself is the same
-    regardless of 阳遁/阴遁.
-
-    Args:
-        xun_shou: Xun shou string (e.g. "甲子").
-        is_yang: Whether it's 阳遁.
-
-    Returns:
-        Palace number (1-9) where 太乙 resides.
+    Passing a 旬首 still returns the starting palace (offset zero).
     """
-    return TAI_YI_GONG_MAP[xun_shou]
+    xun_shou = get_xun_shou(ganzhi)
+    mapping = TAI_YI_GONG_MAP if is_yang else YIN_TAI_YI_GONG_MAP
+    offset = GANZHI_INDEX[ganzhi] % 10
+    return (mapping[xun_shou] - 1 + (offset if is_yang else -offset)) % 9 + 1
 
 
 # ============================================================
@@ -265,8 +253,8 @@ def _place_stars(taiyi_gong: int, is_yang: bool) -> Dict[int, str]:
 def _get_heihuangdao(day_zhi: str) -> List[str]:
     """Get the 十二黑黄道 for the day.
 
-    Starting from the 日支's position in the HEI_HUANG_DAO list:
-        子→青龙(黄道), 丑→明堂(黄道), 寅→天刑(黑道), ...
+    Uses the traditional day-branch 青龙 starting-hour table.
+    Returns entries indexed by hour branch 子 through 亥.
 
     Args:
         day_zhi: Day 地支 (second char of day ganzhi).
@@ -274,10 +262,11 @@ def _get_heihuangdao(day_zhi: str) -> List[str]:
     Returns:
         List of 12 strings, each "名称(类型)".
     """
-    start_idx = DI_ZHI.index(day_zhi)
+    # 子午起申，丑未起戌，寅申起子，卯酉起寅，辰戌起辰，巳亥起午。
+    qinglong_hour = (DI_ZHI.index(day_zhi) % 6 * 2 + 8) % 12
     result: List[str] = []
     for i in range(12):
-        idx = (start_idx + i) % 12
+        idx = (i - qinglong_hour) % 12
         name, htype = HEI_HUANG_DAO[idx]
         result.append(f"{name}({htype})")
     return result
@@ -307,6 +296,7 @@ def calculate_board_rija(dt: datetime.datetime) -> RiJiaBoard:
     Returns:
         RiJiaBoard dataclass with all computed fields.
     """
+    dt = normalize_datetime(dt)
     # 1. Four-pillar ganzhi
     ganzhi_full = get_ganzhi_full(dt, dt.hour)
     day_gz = ganzhi_full["day"]
@@ -314,10 +304,10 @@ def calculate_board_rija(dt: datetime.datetime) -> RiJiaBoard:
     day_zhi = day_gz[1]
 
     # 2. Yang/Yin dun
-    is_yang = is_yang_dun(dt)
+    is_yang = is_yang_dun(dt.date())
 
     # 3. 休门 palace (三日一宫)
-    xiu_gong = get_xiu_gong(day_gz)
+    xiu_gong = get_xiu_gong(day_gz, is_yang)
 
     # 4. 八门 placement
     doors = _place_doors(xiu_gong, day_gan)
@@ -326,7 +316,7 @@ def calculate_board_rija(dt: datetime.datetime) -> RiJiaBoard:
     xun_shou = get_xun_shou(day_gz)
 
     # 6. 太乙 starting palace
-    taiyi_gong = get_taiyi_gong(xun_shou, is_yang)
+    taiyi_gong = get_taiyi_gong(day_gz, is_yang)
 
     # 7. 九星 placement
     stars = _place_stars(taiyi_gong, is_yang)
@@ -355,4 +345,9 @@ def calculate_board_rija(dt: datetime.datetime) -> RiJiaBoard:
         xi_shen=xi_shen,
         tianyi_gui_ren=list(tianyi),
         jie_lu=jie_lu,
+        xun_shou=xun_shou,
+        xun_day=GANZHI_INDEX[day_gz] % 10 + 1,
+        taiyi_gong=taiyi_gong,
+        conflicts=[{"branch": z, "signals": ["天乙贵人", "截路空亡"]}
+                   for z in tianyi if z in jie_lu],
     )

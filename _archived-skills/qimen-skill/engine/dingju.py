@@ -9,7 +9,7 @@ using three different methods:
     符头 (futou) position against solar term start.
 
 拆补法 (Chai Bu Fa):
-    Uses day ganzhi's 地支 directly with current solar term.
+    Uses the nearest 甲/己 符头 to determine 元 with the current solar term.
 
 茅山法 (Mao Shan Fa):
     Pure solar-term-based; ignores 符头 entirely.
@@ -20,14 +20,23 @@ from typing import Tuple, Union
 
 from .calendar_core import (
     get_current_solar_term,
+    _to_date,
     get_solar_terms_for_year,
     get_futou,
     get_yuan_by_futou,
-    get_ganzhi_day,
     YANG_JU_TABLE,
     YIN_JU_TABLE,
-    YUAN_INDEX,
 )
+
+def _current_term_start(d):
+    """Most recent local term date, including the previous December."""
+    d = _to_date(d)
+    term = get_current_solar_term(d)
+    dates = [t["date"] for y in (d.year - 1, d.year)
+             for t in get_solar_terms_for_year(y)
+             if t["name"] == term and t["date"] <= d]
+    return term, max(dates)
+
 
 # Type alias: (dun, description, mode, yuan)
 #   dun:   "阳遁" or "阴遁"
@@ -68,11 +77,9 @@ def dingju_zirun(d: Union[date, datetime]) -> DingjuResult:
     Returns:
         (dun, description, mode, yuan)
     """
-    term = get_current_solar_term(d)
-    terms_list = get_solar_terms_for_year(d.year if isinstance(d, date) else d.year)
-
-    # Find the start date of the current solar term
-    term_start = [t for t in terms_list if t["name"] == term][0]["date"]
+    d = _to_date(d)
+    term, term_start = _current_term_start(d)
+    terms_list = get_solar_terms_for_year(d.year)
 
     futou = get_futou(d)
     diff = (futou - term_start).days  # positive = futou ahead, negative = term ahead
@@ -102,7 +109,7 @@ def dingju_zirun(d: Union[date, datetime]) -> DingjuResult:
 def dingju_chaibu(d: Union[date, datetime]) -> DingjuResult:
     """拆补法 (Chai Bu Fa).
 
-    Uses the day's 地支 (zhi) from the day ganzhi to determine yuan:
+    Uses the nearest 甲/己 符头's 地支 to determine yuan:
       - 子/午/卯/酉 → 上元
       - 寅/申/巳/亥 → 中元
       - 辰/戌/丑/未 → 下元
@@ -111,10 +118,8 @@ def dingju_chaibu(d: Union[date, datetime]) -> DingjuResult:
     Returns:
         (dun, description, mode, yuan)
     """
-    term = get_current_solar_term(d)
-    day_gz = get_ganzhi_day(d)
-    zhi = day_gz[1]  # second character = 地支
-    yuan = YUAN_INDEX[zhi]
+    term = get_current_solar_term(_to_date(d))
+    yuan = get_yuan_by_futou(get_futou(d))
 
     dun, ju = _lookup_ju(term, yuan)
     return dun, f"{dun}{ju}局", "拆补", yuan
@@ -132,17 +137,10 @@ def dingju_maoshan(d: Union[date, datetime]) -> DingjuResult:
     Returns:
         (dun, description, mode, yuan)
     """
-    term = get_current_solar_term(d)
-    terms_list = get_solar_terms_for_year(d.year if isinstance(d, date) else d.year)
-    term_start = [t for t in terms_list if t["name"] == term][0]["date"]
+    d = _to_date(d)
+    term, term_start = _current_term_start(d)
     days_since = (d - term_start).days
-
-    if days_since < 5:
-        yuan = "上元"
-    elif days_since < 10:
-        yuan = "中元"
-    else:
-        yuan = "下元"
+    yuan = "上元" if days_since < 5 else "中元" if days_since < 10 else "下元"
 
     dun, ju = _lookup_ju(term, yuan)
     return dun, f"{dun}{ju}局", "茅山", yuan
@@ -164,5 +162,6 @@ def determine_board(d: Union[date, datetime], method: str = "置闰法") -> Ding
         "拆补法": dingju_chaibu,
         "茅山法": dingju_maoshan,
     }
-    fn = method_map.get(method, dingju_zirun)
-    return fn(d)
+    if method not in method_map:
+        raise ValueError(f"Unsupported dingju method: {method}")
+    return method_map[method](d)

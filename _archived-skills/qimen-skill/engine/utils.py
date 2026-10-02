@@ -114,6 +114,9 @@ def format_rija_text(board: RiJiaBoard) -> str:
         dz = _DI_ZHI[i] if i < len(_DI_ZHI) else "?"
         lines.append(f"  {dz}: {item}")
 
+    lines.append(f"旬首: {board.xun_shou} | 旬内第{board.xun_day}日 | 太乙: {board.taiyi_gong}宫")
+    for conflict in board.conflicts:
+        lines.append(f"冲突信号: {conflict['branch']}同时为贵人与截路空亡")
     return "\n".join(lines)
 
 
@@ -143,6 +146,12 @@ def board_to_dict(board: Union[ShiJiaBoard, RiJiaBoard]) -> dict:
         "xi_shen": board.xi_shen,
         "tianyi_gui_ren": board.tianyi_gui_ren,
         "jie_lu": board.jie_lu,
+        "xun_shou": board.xun_shou,
+        "xun_day": board.xun_day,
+        "taiyi_gong": board.taiyi_gong,
+        "timezone": board.timezone,
+        "rule_version": board.rule_version,
+        "conflicts": board.conflicts,
     }
 
 
@@ -169,10 +178,9 @@ def calculate(
     Raises:
         ValueError: 当 dt_str 格式无法解析时抛出
     """
-    if " " in dt_str:
-        dt = datetime.datetime.strptime(dt_str, "%Y-%m-%d %H:%M")
-    else:
-        dt = datetime.datetime.strptime(dt_str, "%Y-%m-%d")
+    dt = datetime.datetime.fromisoformat(dt_str)
+    if board_type not in ("时家", "日家"):
+        raise ValueError("board_type must be 时家 or 日家")
 
     if board_type == "时家":
         return calculate_board_shijia(dt, method)

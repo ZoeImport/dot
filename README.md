@@ -181,7 +181,6 @@ REPOSITORY IS PUBLIC. If git clone or any file fetch returns 404/access denied:
    1) add-provider-model     - Add AI provider/model
    2) agent-browser          - Browser automation
    3) defect-handler         - Bug analysis workflow
-   4) qimen-skill            - 奇门遁甲 Divination (Qi Men Dun Jia)
    ... (auto-detect full list from repo)
 
    After selection: `cp -r ~/CodeSpace/dot/skills/{selected} ~/.agents/skills/`
@@ -264,7 +263,6 @@ Send me a summary like:
    1) add-provider-model     - 添加 AI Provider/Model
    2) agent-browser          - 浏览器自动化
    3) defect-handler         - Bug 分析修复工作流
-   4) qimen-skill            - 奇门遁甲排盘
    ...（自动检测仓库完整列表）
 
    选择后执行：`cp -r ~/CodeSpace/dot/skills/{selected} ~/.agents/skills/`
@@ -338,6 +336,22 @@ Only the skills below are currently installable. Retired skills live in `_archiv
 | `review-and-pr` | Code review → compile check → commit → PR in one flow |
 | `reviewcode` | Go code review: logging/traceability, error handling, abstraction, retry & timeouts, general quality |
 | `xlsx` | Create, read, edit spreadsheets and tabular data |
+
+### Archived Qi Men skill
+
+[`_archived-skills/qimen-skill`](./_archived-skills/qimen-skill/README.md) remains
+archived and is excluded from default installation. Its `rija-v2` day-board rules
+correct the day-cycle epoch, Yin Dun rest-door table, daily Tai Yi movement,
+geographic door rotation, joy-spirit directions, and hourly black/yellow paths.
+Calendar inputs use `Asia/Shanghai` and midnight day rollover; the daily board
+switches Dun on the solstice's local date, preserving one board per civil day.
+
+The 2026-10-02 08:00 regression matches 丙午 / 丁酉 / 己酉 / 戊辰,
+休门坎1 and 太乙坤2. The rule layer preserves conflicting signals and exposes
+hour-board voids, horse, punishment, tombs, gate relations and selected patterns.
+**Hour boards remain experimental:** standard rotating-star hosting and complete
+intercalation are not yet validated. This is a reflection tool, not a complete
+or independently certified divination engine. See its README for usage and tests.
 
 Skills in this repository are the personal/public subset. Organization-scoped skills
 (JX platform lifecycle, CI/CD operations) live in the separate private `JUXON-AI/JX-dot`.

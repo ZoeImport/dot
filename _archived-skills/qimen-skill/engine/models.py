@@ -56,6 +56,7 @@ class ShiJiaBoard:
     pan: List[GongData]
     patterns: List[str]
     notes: List[str]
+    markers: List[dict] = field(default_factory=list)
 
     def to_dict(self) -> dict:
         return {
@@ -74,6 +75,9 @@ class ShiJiaBoard:
                      "door": g.door, "spirit": g.spirit,
                      "notes": g.notes} for g in self.pan],
             "patterns": self.patterns,
+            "notes": self.notes,
+            "markers": self.markers,
+            "status": "experimental",
         }
 
 @dataclass
@@ -88,3 +92,10 @@ class RiJiaBoard:
     xi_shen: str
     tianyi_gui_ren: List[str]
     jie_lu: str
+
+    xun_shou: str = ""
+    xun_day: int = 0
+    taiyi_gong: int = 0
+    conflicts: List[dict] = field(default_factory=list)
+    timezone: str = "Asia/Shanghai"
+    rule_version: str = "rija-v2"
