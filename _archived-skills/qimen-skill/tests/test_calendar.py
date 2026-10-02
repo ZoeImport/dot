@@ -11,8 +11,8 @@ from engine.calendar_core import (
 
 class TestGanzhi:
     def test_known_date(self):
-        """2000-01-01 = 甲子日"""
-        assert get_ganzhi_day(datetime.date(2000, 1, 1)) == "甲子"
+        """2000-01-01 = 戊午日"""
+        assert get_ganzhi_day(datetime.date(2000, 1, 1)) == "戊午"
 
     def test_hour_ganzhi_jia(self):
         """甲日 子时 = 甲子"""

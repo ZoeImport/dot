@@ -24,11 +24,13 @@ from .models import (
 )
 from .calendar_core import (
     get_ganzhi_full,
+    normalize_datetime,
     get_xun_shou,
     get_xun_yi,
     DI_ZHI,
 )
 from .dingju import determine_board
+from .analysis_rules import analyze_shijia
 
 # ============================================================
 # Constants
@@ -41,7 +43,7 @@ YI_YI_SAN_QI = ["戊", "己", "庚", "辛", "壬", "癸", "丁", "丙", "乙"]
 DOOR_ORDER = ["休门", "生门", "伤门", "杜门", "景门", "死门", "惊门", "开门"]
 
 # 八门/八神实际经过的宫位（跳过中五，按洛书顺时针）
-GONG_CW = [1, 2, 3, 4, 6, 7, 8, 9]
+GONG_CW = [1, 8, 3, 4, 9, 2, 7, 6]
 
 
 # ============================================================
@@ -308,8 +310,9 @@ def calculate_board_shijia(
     Returns:
         ShiJiaBoard 完整时家奇门排盘结果
     """
+    dt = normalize_datetime(dt)
     # —— Step 0: 四柱 ——
-    ganzhi = get_ganzhi_full(dt.date(), dt.hour)
+    ganzhi = get_ganzhi_full(dt, dt.hour)
     hour_gz = ganzhi["hour"]
     shi_gan = hour_gz[0]
 
@@ -360,6 +363,7 @@ def calculate_board_shijia(
             spirit=spirits.get(gong_num, ""),
         ))
 
+    markers, patterns = analyze_shijia(ganzhi, xun_shou, pan)
     return ShiJiaBoard(
         input_datetime=dt.isoformat(),
         ganzhi=ganzhi,
@@ -377,6 +381,7 @@ def calculate_board_shijia(
         doors=doors,
         spirits=spirits,
         pan=pan,
-        patterns=[],
-        notes=[],
+        patterns=patterns,
+        markers=markers,
+        notes=["时家实验性实现：九星转盘、天禽寄宫、置闰尚未完成权威盘例验证；标记仅基于当前盘面。"],
     )

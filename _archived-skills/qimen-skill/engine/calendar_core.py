@@ -2,7 +2,7 @@
 Calendar core module for Qi Men Dun Jia calculation.
 
 Provides functions for:
-- Solar term (节气) calculation using pyephem
+- Solar term (节气) instants using a pinned Shou Xing calendar table
 - Ganzhi (天干地支) for year, month, day, hour
 - Futou (符头), Xun Shou (旬首), Xun Yi (六仪)
 - Yang/Yin Dun determination
@@ -10,8 +10,18 @@ Provides functions for:
 """
 
 import ephem
-from datetime import datetime, date, timedelta
-from typing import List, Dict, Optional, Tuple, Union
+from datetime import datetime, date, timedelta, timezone
+from zoneinfo import ZoneInfo
+from functools import lru_cache
+from lunar_python import Solar
+from typing import List, Dict, Union
+
+SHANGHAI = ZoneInfo("Asia/Shanghai")
+
+def normalize_datetime(d: datetime) -> datetime:
+    """Naive input is Beijing civil time; aware input is converted to Beijing."""
+    return d.replace(tzinfo=SHANGHAI) if d.tzinfo is None else d.astimezone(SHANGHAI)
+
 
 
 # ============================================================
@@ -95,95 +105,50 @@ XUN_YI_MAP = {
 # Internal helpers
 # ============================================================
 
-def _to_ephem_date(d: Union[date, datetime, str, ephem.Date]) -> ephem.Date:
-    """Convert various date types to ephem.Date."""
+def _to_ephem_date(d) -> ephem.Date:
     if isinstance(d, ephem.Date):
         return d
     if isinstance(d, datetime):
-        return ephem.Date(d)
+        return ephem.Date(normalize_datetime(d).astimezone(timezone.utc))
     if isinstance(d, date):
-        return ephem.Date(datetime.combine(d, datetime.min.time()))
+        return _to_ephem_date(datetime.combine(d, datetime.min.time()))
+    return ephem.Date(d)
 
 
 def _to_datetime(d_ephem: ephem.Date) -> datetime:
-    """Convert ephem.Date to Python datetime."""
-    return d_ephem.datetime()
-    if isinstance(d, str):
-        return ephem.Date(d)
-    return ephem.Date(d)
+    return d_ephem.datetime().replace(tzinfo=timezone.utc).astimezone(SHANGHAI)
 
 
 def _to_date(d: Union[date, datetime]) -> date:
     """Convert to Python date object."""
     if isinstance(d, datetime):
-        return d.date()
+        return normalize_datetime(d).date()
     if isinstance(d, date):
         return d
     return _to_datetime(_to_ephem_date(d)).date()
-
-
-def _sun_longitude_degrees(d: ephem.Date) -> float:
-    """Compute the Sun's geocentric ecliptic longitude in degrees (0-360).
-
-    pyephem's sun.hlong returns the Earth's heliocentric longitude in radians.
-    Sun's geocentric ecliptic longitude = Earth's heliocentric longitude + 180 deg.
-    """
-    import math
-    sun = ephem.Sun()
-    sun.compute(d)
-    # float(sun.hlong) gives Earth's heliocentric longitude in radians
-    earth_lon_rad = float(sun.hlong)
-    # Add pi (180 deg) to get Sun's geocentric ecliptic longitude
-    sun_lon_rad = earth_lon_rad + math.pi
-    return (sun_lon_rad * 180.0 / math.pi) % 360.0
 
 
 # ============================================================
 # Solar Term Functions
 # ============================================================
 
+@lru_cache(maxsize=256)
 def find_solar_term_date(year: int, longitude: float) -> ephem.Date:
-    """Find the exact date when the Sun reaches a specific ecliptic longitude.
+    """Astronomical term instant, returned as UTC ephem.Date.
 
-    Uses Newton's method with pyephem for precision.
-    The Sun moves ~0.9856 degrees per day, so correction factor ~1.0146 day/deg.
-
-    Args:
-        year: The calendar year to search in.
-        longitude: Target ecliptic longitude in degrees (0-360).
-
-    Returns:
-        ephem.Date of the solar term.
+    lunar-python's Shou Xing calendar table supplies Beijing civil timestamps.
+    Searching two years includes the winter-solstice alias at year end.
     """
-    sun = ephem.Sun()
-
-    # Starting estimate: day-of-year ~ 79 (Mar 20 ~ 春分 0 deg) + (lon/360)*365.25
-    # Wrap around for longitudes > ~282 deg
-    day_offset = (longitude / 360.0) * 365.25
-    start_doy = 79.0 + day_offset
-    if start_doy > 365.0:
-        start_doy -= 365.25
-
-    d = ephem.Date(f"{year}/1/1") + (start_doy - 1.0)
-
-    # Newton iteration: compute Sun's geocentric ecliptic longitude
-    # float(sun.hlong) gives Earth's heliocentric longitude in radians
-    # Sun's ecliptic = Earth's heliocentric + 180 deg
-    import math
-    for _ in range(30):
-        sun.compute(d)
-        earth_lon_rad = float(sun.hlong)
-        sun_lon_deg = ((earth_lon_rad + math.pi) * 180.0 / math.pi) % 360.0
-        diff = sun_lon_deg - longitude
-        if diff > 180:
-            diff -= 360
-        elif diff < -180:
-            diff += 360
-        if abs(diff) < 1e-9:
-            break
-        d = ephem.Date(d - diff * 365.25 / 360.0)
-
-    return d
+    name = next((n for n, lon in SOLAR_TERMS.items() if lon == longitude), None)
+    if name is None:
+        raise ValueError("longitude must identify one of the 24 solar terms")
+    for y in (year, year + 1):
+        term = Solar.fromYmd(y, 6, 1).getLunar().getJieQiTable()[name]
+        if term.getYear() == year:
+            local = datetime.strptime(term.toYmdHms(), "%Y-%m-%d %H:%M:%S")
+            # The upstream almanac uses fixed UTC+8, including historical DST years.
+            return ephem.Date(local.replace(tzinfo=timezone(timedelta(hours=8))))
+    raise ValueError(f"No solar term {name} in {year}")
 
 
 def get_solar_terms_for_year(year: int) -> List[Dict]:
@@ -208,51 +173,24 @@ def get_solar_terms_for_year(year: int) -> List[Dict]:
 
 
 def get_current_solar_term(d: Union[date, datetime]) -> str:
-    """Get the current (most recent) solar term for a given date.
+    year = _to_date(d).year
+    terms = []
+    for y in (year - 1, year):
+        for name, lon in SOLAR_TERMS.items():
+            instant = _to_datetime(find_solar_term_date(y, lon))
+            key = instant if isinstance(d, datetime) else instant.date()
+            terms.append((key, name))
+    target = normalize_datetime(d) if isinstance(d, datetime) else d
+    return max((key, name) for key, name in terms if key <= target)[1]
 
-    Returns:
-        Solar term name string (e.g. "立春").
-    """
-    d_obj = _to_date(d)
-    year = d_obj.year
-
-    terms_prev = get_solar_terms_for_year(year - 1)
-    terms_curr = get_solar_terms_for_year(year)
-    all_terms = sorted(terms_prev + terms_curr, key=lambda t: t["date"])
-
-    current = all_terms[0]["name"]
-    for term in all_terms:
-        if d_obj >= term["date"]:
-            current = term["name"]
-        else:
-            break
-    return current
-
-
-# ============================================================
-# Ganzhi Functions
-# ============================================================
 
 def get_ganzhi_year(d: Union[date, datetime]) -> str:
-    """Get the year ganzhi (e.g. '甲辰', '癸卯').
-
-    Year ganzhi changes at 立春 (~Feb 4), not on Jan 1.
-    Base: Gregorian year 4 CE = 甲子 (甲 idx 0, 子 idx 0).
-    """
-    d_obj = _to_date(d)
-    year = d_obj.year
-
-    lichun = find_solar_term_date(year, SOLAR_TERMS["立春"])
-    lichun_date = _to_datetime(lichun).date()
-
-    if d_obj < lichun_date:
-        eff_year = year - 1
-    else:
-        eff_year = year
-
-    gan = (eff_year - 4) % 10
-    zhi = (eff_year - 4) % 12
-    return TIAN_GAN[gan] + DI_ZHI[zhi]
+    year = _to_date(d).year
+    boundary = _to_datetime(find_solar_term_date(year, SOLAR_TERMS["立春"]))
+    target = normalize_datetime(d) if isinstance(d, datetime) else d
+    if target < (boundary if isinstance(d, datetime) else boundary.date()):
+        year -= 1
+    return SIXTY_JIAZI[(year - 4) % 60]
 
 
 def _get_year_gan_index(year_gan_input: str) -> int:
@@ -265,70 +203,23 @@ def _get_year_gan_index(year_gan_input: str) -> int:
 
 
 def get_ganzhi_month(d: Union[date, datetime], year_gan: str) -> str:
-    """Get month ganzhi using 五虎遁元 (Five Tiger Escape).
-
-    五虎遁元:
-        甲己之年丙作首  -> 甲/己 year -> 丙寅 starts
-        乙庚之岁戊为头  -> 乙/庚 year -> 戊寅 starts
-        丙辛之岁寻庚上  -> 丙/辛 year -> 庚寅 starts
-        丁壬壬寅顺水流  -> 丁/壬 year -> 壬寅 starts
-        若问戊癸何处起，甲寅之上好追求 -> 戊/癸 year -> 甲寅 starts
-
-    Formula: first_month_gan_idx = (year_gan_idx + 1) * 2 % 10
-
-    Args:
-        d: Target date.
-        year_gan: Year ganzhi string (e.g. "甲辰" or "甲").
-
-    Returns:
-        Month ganzhi string (e.g. "丙寅").
-    """
-    d_obj = _to_date(d)
-    year = d_obj.year
-    year_gan_idx = _get_year_gan_index(year_gan)
-
-    prev_xiaohan = find_solar_term_date(year - 1, SOLAR_TERMS["小寒"])
-    prev_xiaohan_date = _to_datetime(prev_xiaohan).date()
-
-    jie_dates = []
-    for name, lon in zip(JIE_TERMS, JIE_LONGITUDES):
-        jd = find_solar_term_date(year, lon)
-        jie_dates.append((name, _to_datetime(jd).date()))
-
-    # Timeline: [prev 小寒(丑), 立春(寅), 惊蛰(卯), ..., 小寒(丑)]
-    # Each entry: (label, date, zhi, month_offset, use_prev_year_gan)
-    timeline: List[Tuple[str, date, str, int, bool]] = [
-        ("小寒(prev)", prev_xiaohan_date, "丑", 11, True)
-    ]
-    for jie_name, jd_date in jie_dates:
-        idx = JIE_TERMS.index(jie_name)
-        timeline.append((jie_name, jd_date, JIE_ZHI[idx], idx, False))
-
-    for i in range(1, len(timeline)):
-        if d_obj < timeline[i][1]:
-            prev_entry = timeline[i - 1]
-            _, _, zhi, offset, use_prev_year = prev_entry
-
-            if use_prev_year:
-                prev_year = year - 1
-                eff_year_gan_idx = (prev_year - 4) % 10
-            else:
-                eff_year_gan_idx = year_gan_idx
-
-            first_gan_idx = (eff_year_gan_idx + 1) * 2 % 10
-            month_gan_idx = (first_gan_idx + offset) % 10
-            return TIAN_GAN[month_gan_idx] + zhi
-
-    _, _, zhi, offset, _ = timeline[-1]
-    first_gan_idx = (year_gan_idx + 1) * 2 % 10
-    month_gan_idx = (first_gan_idx + offset) % 10
-    return TIAN_GAN[month_gan_idx] + zhi
+    year = _to_date(d).year
+    target = normalize_datetime(d) if isinstance(d, datetime) else d
+    timeline = []
+    for y in (year - 1, year):
+        for offset, name in enumerate(JIE_TERMS):
+            instant = _to_datetime(find_solar_term_date(y, SOLAR_TERMS[name]))
+            key = instant if isinstance(d, datetime) else instant.date()
+            timeline.append((key, offset))
+    _, offset = max(entry for entry in timeline if entry[0] <= target)
+    first = (_get_year_gan_index(year_gan) + 1) * 2 % 10
+    return TIAN_GAN[(first + offset) % 10] + JIE_ZHI[offset]
 
 
 def get_ganzhi_day(d: Union[date, datetime]) -> str:
     """Get day ganzhi.
 
-    Base: 2000-01-01 = 甲子日. Cycle repeats every 60 days.
+    Base: 2000-01-01 = 戊午日 (index 54). Cycle repeats every 60 days.
 
     Returns:
         Day ganzhi string (e.g. "甲子").
@@ -336,7 +227,7 @@ def get_ganzhi_day(d: Union[date, datetime]) -> str:
     d_obj = _to_date(d)
     base = date(2000, 1, 1)
     delta_days = (d_obj - base).days
-    idx = delta_days % 60
+    idx = (delta_days + 54) % 60
     return SIXTY_JIAZI[idx]
 
 
@@ -359,6 +250,8 @@ def get_ganzhi_hour(hour: int, day_gan: str) -> str:
     Returns:
         Hour ganzhi string (e.g. "甲子").
     """
+    if not isinstance(hour, int) or not 0 <= hour <= 23:
+        raise ValueError("hour must be an integer from 0 to 23")
     hour_zhi_idx = (hour + 1) // 2 % 12
 
     day_gan_idx = TIAN_GAN.index(day_gan[0])
@@ -379,9 +272,9 @@ def get_ganzhi_full(d: Union[date, datetime], hour: int) -> Dict[str, str]:
         Dict with keys 'year', 'month', 'day', 'hour'.
     """
     d_obj = _to_date(d)
-    year_gz = get_ganzhi_year(d_obj)
+    year_gz = get_ganzhi_year(d)
     day_gz = get_ganzhi_day(d_obj)
-    month_gz = get_ganzhi_month(d_obj, year_gz)
+    month_gz = get_ganzhi_month(d, year_gz)
     hour_gz = get_ganzhi_hour(hour, day_gz)
 
     return {
@@ -451,21 +344,7 @@ def get_xun_yi(xun_shou: str) -> str:
 # ============================================================
 
 def is_yang_dun(d: Union[date, datetime]) -> bool:
-    """Determine if a date is in 阳遁 (yang dun) period.
-
-    Yang dun: 冬至 -> 夏至 (sun longitude 270 -> 90 deg).
-    Yin dun:  夏至 -> 冬至 (sun longitude 90 -> 270 deg).
-
-    Uses the Sun's ecliptic longitude for precise determination:
-        yang = longitude in [270, 360) or [0, 90)
-        yin  = longitude in [90, 270)
-
-    Returns:
-        True if yang dun, False if yin dun.
-    """
-    d_ephem = _to_ephem_date(d)
-    lon = _sun_longitude_degrees(d_ephem)
-    return (270.0 <= lon < 360.0) or (0.0 <= lon < 90.0)
+    return get_current_solar_term(d) in YANG_JU_TABLE
 
 
 def get_yuan_by_futou(futou_date: Union[date, datetime]) -> str:
