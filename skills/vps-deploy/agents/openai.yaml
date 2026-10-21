@@ -1,0 +1,4 @@
+interface:
+  display_name: "VPS Deploy"
+  short_description: "部署并优化 VPS 代理，保留独立配置与分流，核验速度、DNS 和 UDP 出口"
+  default_prompt: "使用 $vps-deploy 检查并优化已授权 VPS 的代理链路，保留现有分流和独立配置，实测验证速度及出口安全。"

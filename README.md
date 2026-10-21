@@ -335,6 +335,7 @@ Only the skills below are currently installable. Retired skills live in `_archiv
 | `pptx` | Create, read, edit PowerPoint decks |
 | `review-and-pr` | Code review → compile check → commit → PR in one flow |
 | `reviewcode` | Go code review: logging/traceability, error handling, abstraction, retry & timeouts, general quality |
+| `vps-deploy` | Deploy and tune authorized VPS proxies, with a full Mihomo YAML template, preserved routing rules, iOS ClashMi adaptation, and per-host interface/service validation |
 | `xlsx` | Create, read, edit spreadsheets and tabular data |
 
 ### Archived Qi Men skill

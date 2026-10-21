@@ -1,0 +1,620 @@
+# Portable template: fill private server, SNI, password and SHA-256 fingerprint before use.
+# 45 Mbps is an example; verify capacity on each host/network.
+# LOCAL_USER in desktop process-path rules is a literal placeholder; replace locally if needed.
+---
+port: 7890
+socks-port: 7891
+allow-lan: false
+bind-address: 127.0.0.1
+mode: rule
+log-level: info
+ipv6: false
+proxies:
+- name: US-LAX-HY2
+  type: hysteria2
+  server: vps.example.com
+  port: 443
+  password: CHANGE_ME_BEFORE_USE
+  sni: vps.example.com
+  skip-cert-verify: false
+  fingerprint: '0000000000000000000000000000000000000000000000000000000000000000'
+  alpn:
+  - h3
+  udp: true
+  up: 45 Mbps
+  down: 45 Mbps
+proxy-groups:
+- name: vps-server-usa
+  type: select
+  proxies:
+  - US-LAX-HY2
+rules:
+- DOMAIN-SUFFIX,osgame.qq.com,DIRECT
+- PROCESS-PATH,/Users/LOCAL_USER/Library/Application Support/com.tencent.yybmac/YYBEngineDownload/yyb_mac.app/Contents/MacOS/yyb_mac,DIRECT
+- PROCESS-PATH,/Users/LOCAL_USER/Library/Application Support/com.tencent.yybmac/Applications/com.tencent.macapk.com.tencent.tmgp.osgame.app/Contents/MacOS/YYBPackage,DIRECT
+- DOMAIN,api.99ai.uk,DIRECT
+- DOMAIN-SUFFIX,99ai.uk,DIRECT
+- DOMAIN-SUFFIX,alibabacloud.com,DIRECT
+- IP-CIDR,1.1.1.1/32,vps-server-usa,no-resolve
+- IP-CIDR,8.8.8.8/32,vps-server-usa,no-resolve
+- DOMAIN-SUFFIX,services.googleapis.cn,vps-server-usa
+- DOMAIN-SUFFIX,xn--ngstr-lra8j.com,vps-server-usa
+- DOMAIN,safebrowsing.urlsec.qq.com,DIRECT
+- DOMAIN,safebrowsing.googleapis.com,DIRECT
+- DOMAIN,developer.apple.com,vps-server-usa
+- DOMAIN-SUFFIX,digicert.com,vps-server-usa
+- DOMAIN,ocsp.apple.com,vps-server-usa
+- DOMAIN,ocsp.comodoca.com,vps-server-usa
+- DOMAIN,ocsp.usertrust.com,vps-server-usa
+- DOMAIN,ocsp.sectigo.com,vps-server-usa
+- DOMAIN,ocsp.verisign.net,vps-server-usa
+- DOMAIN-SUFFIX,apple-dns.net,vps-server-usa
+- DOMAIN,testflight.apple.com,vps-server-usa
+- DOMAIN,sandbox.itunes.apple.com,vps-server-usa
+- DOMAIN,itunes.apple.com,vps-server-usa
+- DOMAIN-SUFFIX,apps.apple.com,vps-server-usa
+- DOMAIN-SUFFIX,blobstore.apple.com,vps-server-usa
+- DOMAIN,cvws.icloud-content.com,vps-server-usa
+- DOMAIN-SUFFIX,mzstatic.com,DIRECT
+- DOMAIN-SUFFIX,itunes.apple.com,DIRECT
+- DOMAIN-SUFFIX,icloud.com,DIRECT
+- DOMAIN-SUFFIX,icloud-content.com,DIRECT
+- DOMAIN-SUFFIX,me.com,DIRECT
+- DOMAIN-SUFFIX,aaplimg.com,DIRECT
+- DOMAIN-SUFFIX,cdn20.com,DIRECT
+- DOMAIN-SUFFIX,cdn-apple.com,DIRECT
+- DOMAIN-SUFFIX,akadns.net,DIRECT
+- DOMAIN-SUFFIX,akamaiedge.net,DIRECT
+- DOMAIN-SUFFIX,edgekey.net,DIRECT
+- DOMAIN-SUFFIX,mwcloudcdn.com,DIRECT
+- DOMAIN-SUFFIX,mwcname.com,DIRECT
+- DOMAIN-SUFFIX,apple.com,DIRECT
+- DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT
+- DOMAIN-SUFFIX,apple-mapkit.com,DIRECT
+- DOMAIN,cn.bing.com,DIRECT
+- DOMAIN-SUFFIX,126.com,DIRECT
+- DOMAIN-SUFFIX,126.net,DIRECT
+- DOMAIN-SUFFIX,127.net,DIRECT
+- DOMAIN-SUFFIX,163.com,DIRECT
+- DOMAIN-SUFFIX,360buyimg.com,DIRECT
+- DOMAIN-SUFFIX,36kr.com,DIRECT
+- DOMAIN-SUFFIX,acfun.tv,DIRECT
+- DOMAIN-SUFFIX,air-matters.com,DIRECT
+- DOMAIN-SUFFIX,aixifan.com,DIRECT
+- DOMAIN-KEYWORD,alicdn,DIRECT
+- DOMAIN-KEYWORD,alipay,DIRECT
+- DOMAIN-KEYWORD,taobao,DIRECT
+- DOMAIN-SUFFIX,amap.com,DIRECT
+- DOMAIN-SUFFIX,autonavi.com,DIRECT
+- DOMAIN-KEYWORD,baidu,DIRECT
+- DOMAIN-SUFFIX,bdimg.com,DIRECT
+- DOMAIN-SUFFIX,bdstatic.com,DIRECT
+- DOMAIN-SUFFIX,bilibili.com,DIRECT
+- DOMAIN-SUFFIX,bilivideo.com,DIRECT
+- DOMAIN-SUFFIX,caiyunapp.com,DIRECT
+- DOMAIN-SUFFIX,clouddn.com,DIRECT
+- DOMAIN-SUFFIX,cnbeta.com,DIRECT
+- DOMAIN-SUFFIX,cnbetacdn.com,DIRECT
+- DOMAIN-SUFFIX,cootekservice.com,DIRECT
+- DOMAIN-SUFFIX,csdn.net,DIRECT
+- DOMAIN-SUFFIX,ctrip.com,DIRECT
+- DOMAIN-SUFFIX,dgtle.com,DIRECT
+- DOMAIN-SUFFIX,dianping.com,DIRECT
+- DOMAIN-SUFFIX,douban.com,DIRECT
+- DOMAIN-SUFFIX,doubanio.com,DIRECT
+- DOMAIN-SUFFIX,duokan.com,DIRECT
+- DOMAIN-SUFFIX,easou.com,DIRECT
+- DOMAIN-SUFFIX,ele.me,DIRECT
+- DOMAIN-SUFFIX,feng.com,DIRECT
+- DOMAIN-SUFFIX,fir.im,DIRECT
+- DOMAIN-SUFFIX,frdic.com,DIRECT
+- DOMAIN-SUFFIX,g-cores.com,DIRECT
+- DOMAIN-SUFFIX,godic.net,DIRECT
+- DOMAIN-SUFFIX,gtimg.com,DIRECT
+- DOMAIN,cdn.hockeyapp.net,DIRECT
+- DOMAIN-SUFFIX,hongxiu.com,DIRECT
+- DOMAIN-SUFFIX,hxcdn.net,DIRECT
+- DOMAIN-SUFFIX,iciba.com,DIRECT
+- DOMAIN-SUFFIX,ifeng.com,DIRECT
+- DOMAIN-SUFFIX,ifengimg.com,DIRECT
+- DOMAIN-SUFFIX,ipip.net,DIRECT
+- DOMAIN-SUFFIX,iqiyi.com,DIRECT
+- DOMAIN-SUFFIX,jd.com,DIRECT
+- DOMAIN-SUFFIX,jianshu.com,DIRECT
+- DOMAIN-SUFFIX,knewone.com,DIRECT
+- DOMAIN-SUFFIX,le.com,DIRECT
+- DOMAIN-SUFFIX,lecloud.com,DIRECT
+- DOMAIN-SUFFIX,lemicp.com,DIRECT
+- DOMAIN-SUFFIX,licdn.com,DIRECT
+- DOMAIN-SUFFIX,luoo.net,DIRECT
+- DOMAIN-SUFFIX,meituan.com,DIRECT
+- DOMAIN-SUFFIX,meituan.net,DIRECT
+- DOMAIN-SUFFIX,mi.com,DIRECT
+- DOMAIN-SUFFIX,miaopai.com,DIRECT
+- DOMAIN-SUFFIX,microsoft.com,DIRECT
+- DOMAIN-SUFFIX,microsoftonline.com,DIRECT
+- DOMAIN-SUFFIX,miui.com,DIRECT
+- DOMAIN-SUFFIX,miwifi.com,DIRECT
+- DOMAIN-SUFFIX,mob.com,DIRECT
+- DOMAIN-SUFFIX,netease.com,DIRECT
+- DOMAIN-SUFFIX,office.com,DIRECT
+- DOMAIN-SUFFIX,office365.com,DIRECT
+- DOMAIN-KEYWORD,officecdn,DIRECT
+- DOMAIN-SUFFIX,oschina.net,DIRECT
+- DOMAIN-SUFFIX,ppsimg.com,DIRECT
+- DOMAIN-SUFFIX,pstatp.com,DIRECT
+- DOMAIN-SUFFIX,qcloud.com,DIRECT
+- DOMAIN-SUFFIX,qdaily.com,DIRECT
+- DOMAIN-SUFFIX,qdmm.com,DIRECT
+- DOMAIN-SUFFIX,qhimg.com,DIRECT
+- DOMAIN-SUFFIX,qhres.com,DIRECT
+- DOMAIN-SUFFIX,qidian.com,DIRECT
+- DOMAIN-SUFFIX,qihucdn.com,DIRECT
+- DOMAIN-SUFFIX,qiniu.com,DIRECT
+- DOMAIN-SUFFIX,qiniucdn.com,DIRECT
+- DOMAIN-SUFFIX,qiyipic.com,DIRECT
+- DOMAIN-SUFFIX,qq.com,DIRECT
+- DOMAIN-SUFFIX,qqurl.com,DIRECT
+- DOMAIN-SUFFIX,rarbg.to,DIRECT
+- DOMAIN-SUFFIX,ruguoapp.com,DIRECT
+- DOMAIN-SUFFIX,segmentfault.com,DIRECT
+- DOMAIN-SUFFIX,sinaapp.com,DIRECT
+- DOMAIN-SUFFIX,smzdm.com,DIRECT
+- DOMAIN-SUFFIX,snapdrop.net,DIRECT
+- DOMAIN-SUFFIX,sogou.com,DIRECT
+- DOMAIN-SUFFIX,sogoucdn.com,DIRECT
+- DOMAIN-SUFFIX,sohu.com,DIRECT
+- DOMAIN-SUFFIX,soku.com,DIRECT
+- DOMAIN-SUFFIX,speedtest.net,DIRECT
+- DOMAIN-SUFFIX,sspai.com,DIRECT
+- DOMAIN-SUFFIX,suning.com,DIRECT
+- DOMAIN-SUFFIX,taobao.com,DIRECT
+- DOMAIN-SUFFIX,tencent.com,DIRECT
+- DOMAIN-SUFFIX,tenpay.com,DIRECT
+- DOMAIN-SUFFIX,tianyancha.com,DIRECT
+- DOMAIN-SUFFIX,tmall.com,DIRECT
+- DOMAIN-SUFFIX,tudou.com,DIRECT
+- DOMAIN-SUFFIX,umetrip.com,DIRECT
+- DOMAIN-SUFFIX,upaiyun.com,DIRECT
+- DOMAIN-SUFFIX,upyun.com,DIRECT
+- DOMAIN-SUFFIX,veryzhun.com,DIRECT
+- DOMAIN-SUFFIX,weather.com,DIRECT
+- DOMAIN-SUFFIX,weibo.com,DIRECT
+- DOMAIN-SUFFIX,xiami.com,DIRECT
+- DOMAIN-SUFFIX,xiami.net,DIRECT
+- DOMAIN-SUFFIX,xiaomicp.com,DIRECT
+- DOMAIN-SUFFIX,ximalaya.com,DIRECT
+- DOMAIN-SUFFIX,xmcdn.com,DIRECT
+- DOMAIN-SUFFIX,xunlei.com,DIRECT
+- DOMAIN-SUFFIX,yhd.com,DIRECT
+- DOMAIN-SUFFIX,yihaodianimg.com,DIRECT
+- DOMAIN-SUFFIX,yinxiang.com,DIRECT
+- DOMAIN-SUFFIX,ykimg.com,DIRECT
+- DOMAIN-SUFFIX,youdao.com,DIRECT
+- DOMAIN-SUFFIX,youku.com,DIRECT
+- DOMAIN-SUFFIX,zealer.com,DIRECT
+- DOMAIN-SUFFIX,zhihu.com,DIRECT
+- DOMAIN-SUFFIX,zhimg.com,DIRECT
+- DOMAIN-SUFFIX,zimuzu.tv,DIRECT
+- DOMAIN-SUFFIX,zoho.com,DIRECT
+- DOMAIN-KEYWORD,amazon,vps-server-usa
+- DOMAIN-KEYWORD,google,vps-server-usa
+- DOMAIN-KEYWORD,gmail,vps-server-usa
+- DOMAIN-KEYWORD,youtube,vps-server-usa
+- DOMAIN-KEYWORD,facebook,vps-server-usa
+- DOMAIN-SUFFIX,fb.me,vps-server-usa
+- DOMAIN-SUFFIX,fbcdn.net,vps-server-usa
+- DOMAIN-KEYWORD,twitter,vps-server-usa
+- DOMAIN-KEYWORD,instagram,vps-server-usa
+- DOMAIN-KEYWORD,dropbox,vps-server-usa
+- DOMAIN-SUFFIX,twimg.com,vps-server-usa
+- DOMAIN-KEYWORD,blogspot,vps-server-usa
+- DOMAIN-SUFFIX,youtu.be,vps-server-usa
+- DOMAIN-KEYWORD,whatsapp,vps-server-usa
+- DOMAIN-KEYWORD,admarvel,REJECT
+- DOMAIN-KEYWORD,admaster,REJECT
+- DOMAIN-KEYWORD,adsage,REJECT
+- DOMAIN-KEYWORD,adsmogo,REJECT
+- DOMAIN-KEYWORD,adsrvmedia,REJECT
+- DOMAIN-KEYWORD,adwords,REJECT
+- DOMAIN-KEYWORD,adservice,REJECT
+- DOMAIN-SUFFIX,appsflyer.com,REJECT
+- DOMAIN-KEYWORD,domob,REJECT
+- DOMAIN-SUFFIX,doubleclick.net,REJECT
+- DOMAIN-KEYWORD,duomeng,REJECT
+- DOMAIN-KEYWORD,dwtrack,REJECT
+- DOMAIN-KEYWORD,guanggao,REJECT
+- DOMAIN-KEYWORD,lianmeng,REJECT
+- DOMAIN-SUFFIX,mmstat.com,REJECT
+- DOMAIN-KEYWORD,mopub,REJECT
+- DOMAIN-KEYWORD,omgmta,REJECT
+- DOMAIN-KEYWORD,openx,REJECT
+- DOMAIN-KEYWORD,partnerad,REJECT
+- DOMAIN-KEYWORD,pingfore,REJECT
+- DOMAIN-KEYWORD,supersonicads,REJECT
+- DOMAIN-KEYWORD,uedas,REJECT
+- DOMAIN-KEYWORD,umeng,REJECT
+- DOMAIN-KEYWORD,usage,REJECT
+- DOMAIN-SUFFIX,vungle.com,REJECT
+- DOMAIN-KEYWORD,wlmonitor,REJECT
+- DOMAIN-KEYWORD,zjtoolbar,REJECT
+- DOMAIN-SUFFIX,9to5mac.com,vps-server-usa
+- DOMAIN-SUFFIX,abpchina.org,vps-server-usa
+- DOMAIN-SUFFIX,adblockplus.org,vps-server-usa
+- DOMAIN-SUFFIX,adobe.com,vps-server-usa
+- DOMAIN-SUFFIX,akamaized.net,vps-server-usa
+- DOMAIN-SUFFIX,alfredapp.com,vps-server-usa
+- DOMAIN-SUFFIX,amplitude.com,vps-server-usa
+- DOMAIN-SUFFIX,ampproject.org,vps-server-usa
+- DOMAIN-SUFFIX,android.com,vps-server-usa
+- DOMAIN-SUFFIX,angularjs.org,vps-server-usa
+- DOMAIN-SUFFIX,aolcdn.com,vps-server-usa
+- DOMAIN-SUFFIX,apkpure.com,vps-server-usa
+- DOMAIN-SUFFIX,appledaily.com,vps-server-usa
+- DOMAIN-SUFFIX,appshopper.com,vps-server-usa
+- DOMAIN-SUFFIX,appspot.com,vps-server-usa
+- DOMAIN-SUFFIX,arcgis.com,vps-server-usa
+- DOMAIN-SUFFIX,archive.org,vps-server-usa
+- DOMAIN-SUFFIX,armorgames.com,vps-server-usa
+- DOMAIN-SUFFIX,aspnetcdn.com,vps-server-usa
+- DOMAIN-SUFFIX,att.com,vps-server-usa
+- DOMAIN-SUFFIX,awsstatic.com,vps-server-usa
+- DOMAIN-SUFFIX,azureedge.net,vps-server-usa
+- DOMAIN-SUFFIX,azurewebsites.net,vps-server-usa
+- DOMAIN-SUFFIX,bing.com,vps-server-usa
+- DOMAIN-SUFFIX,bintray.com,vps-server-usa
+- DOMAIN-SUFFIX,bit.com,vps-server-usa
+- DOMAIN-SUFFIX,bit.ly,vps-server-usa
+- DOMAIN-SUFFIX,bitbucket.org,vps-server-usa
+- DOMAIN-SUFFIX,bjango.com,vps-server-usa
+- DOMAIN-SUFFIX,bkrtx.com,vps-server-usa
+- DOMAIN-SUFFIX,blog.com,vps-server-usa
+- DOMAIN-SUFFIX,blogcdn.com,vps-server-usa
+- DOMAIN-SUFFIX,blogger.com,vps-server-usa
+- DOMAIN-SUFFIX,blogsmithmedia.com,vps-server-usa
+- DOMAIN-SUFFIX,blogspot.com,vps-server-usa
+- DOMAIN-SUFFIX,blogspot.hk,vps-server-usa
+- DOMAIN-SUFFIX,bloomberg.com,vps-server-usa
+- DOMAIN-SUFFIX,box.com,vps-server-usa
+- DOMAIN-SUFFIX,box.net,vps-server-usa
+- DOMAIN-SUFFIX,cachefly.net,vps-server-usa
+- DOMAIN-SUFFIX,chromium.org,vps-server-usa
+- DOMAIN-SUFFIX,cl.ly,vps-server-usa
+- DOMAIN-SUFFIX,cloudflare.com,vps-server-usa
+- DOMAIN-SUFFIX,cloudfront.net,vps-server-usa
+- DOMAIN-SUFFIX,cloudmagic.com,vps-server-usa
+- DOMAIN-SUFFIX,cmail19.com,vps-server-usa
+- DOMAIN-SUFFIX,cnet.com,vps-server-usa
+- DOMAIN-SUFFIX,cocoapods.org,vps-server-usa
+- DOMAIN-SUFFIX,comodoca.com,vps-server-usa
+- DOMAIN-SUFFIX,crashlytics.com,vps-server-usa
+- DOMAIN-SUFFIX,culturedcode.com,vps-server-usa
+- DOMAIN-SUFFIX,d.pr,vps-server-usa
+- DOMAIN-SUFFIX,danilo.to,vps-server-usa
+- DOMAIN-SUFFIX,dayone.me,vps-server-usa
+- DOMAIN-SUFFIX,db.tt,vps-server-usa
+- DOMAIN-SUFFIX,deskconnect.com,vps-server-usa
+- DOMAIN-SUFFIX,disq.us,vps-server-usa
+- DOMAIN-SUFFIX,disqus.com,vps-server-usa
+- DOMAIN-SUFFIX,disquscdn.com,vps-server-usa
+- DOMAIN-SUFFIX,dnsimple.com,vps-server-usa
+- DOMAIN-SUFFIX,docker.com,vps-server-usa
+- DOMAIN-SUFFIX,dribbble.com,vps-server-usa
+- DOMAIN-SUFFIX,droplr.com,vps-server-usa
+- DOMAIN-SUFFIX,duckduckgo.com,vps-server-usa
+- DOMAIN-SUFFIX,dueapp.com,vps-server-usa
+- DOMAIN-SUFFIX,dytt8.net,vps-server-usa
+- DOMAIN-SUFFIX,edgecastcdn.net,vps-server-usa
+- DOMAIN-SUFFIX,edgekey.net,vps-server-usa
+- DOMAIN-SUFFIX,edgesuite.net,vps-server-usa
+- DOMAIN-SUFFIX,engadget.com,vps-server-usa
+- DOMAIN-SUFFIX,entrust.net,vps-server-usa
+- DOMAIN-SUFFIX,eurekavpt.com,vps-server-usa
+- DOMAIN-SUFFIX,evernote.com,vps-server-usa
+- DOMAIN-SUFFIX,fabric.io,vps-server-usa
+- DOMAIN-SUFFIX,fast.com,vps-server-usa
+- DOMAIN-SUFFIX,fastly.net,vps-server-usa
+- DOMAIN-SUFFIX,fc2.com,vps-server-usa
+- DOMAIN-SUFFIX,feedburner.com,vps-server-usa
+- DOMAIN-SUFFIX,feedly.com,vps-server-usa
+- DOMAIN-SUFFIX,feedsportal.com,vps-server-usa
+- DOMAIN-SUFFIX,fiftythree.com,vps-server-usa
+- DOMAIN-SUFFIX,firebaseio.com,vps-server-usa
+- DOMAIN-SUFFIX,flexibits.com,vps-server-usa
+- DOMAIN-SUFFIX,flickr.com,vps-server-usa
+- DOMAIN-SUFFIX,flipboard.com,vps-server-usa
+- DOMAIN-SUFFIX,g.co,vps-server-usa
+- DOMAIN-SUFFIX,gabia.net,vps-server-usa
+- DOMAIN-SUFFIX,geni.us,vps-server-usa
+- DOMAIN-SUFFIX,gfx.ms,vps-server-usa
+- DOMAIN-SUFFIX,ggpht.com,vps-server-usa
+- DOMAIN-SUFFIX,ghostnoteapp.com,vps-server-usa
+- DOMAIN-SUFFIX,git.io,vps-server-usa
+- DOMAIN-KEYWORD,github,vps-server-usa
+- DOMAIN-SUFFIX,globalsign.com,vps-server-usa
+- DOMAIN-SUFFIX,gmodules.com,vps-server-usa
+- DOMAIN-SUFFIX,godaddy.com,vps-server-usa
+- DOMAIN-SUFFIX,golang.org,vps-server-usa
+- DOMAIN-SUFFIX,gongm.in,vps-server-usa
+- DOMAIN-SUFFIX,goo.gl,vps-server-usa
+- DOMAIN-SUFFIX,goodreaders.com,vps-server-usa
+- DOMAIN-SUFFIX,goodreads.com,vps-server-usa
+- DOMAIN-SUFFIX,gravatar.com,vps-server-usa
+- DOMAIN-SUFFIX,gstatic.com,vps-server-usa
+- DOMAIN-SUFFIX,gvt0.com,vps-server-usa
+- DOMAIN-SUFFIX,hockeyapp.net,vps-server-usa
+- DOMAIN-SUFFIX,hotmail.com,vps-server-usa
+- DOMAIN-SUFFIX,icons8.com,vps-server-usa
+- DOMAIN-SUFFIX,ifixit.com,vps-server-usa
+- DOMAIN-SUFFIX,ift.tt,vps-server-usa
+- DOMAIN-SUFFIX,ifttt.com,vps-server-usa
+- DOMAIN-SUFFIX,iherb.com,vps-server-usa
+- DOMAIN-SUFFIX,imageshack.us,vps-server-usa
+- DOMAIN-SUFFIX,img.ly,vps-server-usa
+- DOMAIN-SUFFIX,imgur.com,vps-server-usa
+- DOMAIN-SUFFIX,imore.com,vps-server-usa
+- DOMAIN-SUFFIX,instapaper.com,vps-server-usa
+- DOMAIN-SUFFIX,ipn.li,vps-server-usa
+- DOMAIN-SUFFIX,is.gd,vps-server-usa
+- DOMAIN-SUFFIX,issuu.com,vps-server-usa
+- DOMAIN-SUFFIX,itgonglun.com,vps-server-usa
+- DOMAIN-SUFFIX,itun.es,vps-server-usa
+- DOMAIN-SUFFIX,ixquick.com,vps-server-usa
+- DOMAIN-SUFFIX,j.mp,vps-server-usa
+- DOMAIN-SUFFIX,js.revsci.net,vps-server-usa
+- DOMAIN-SUFFIX,jshint.com,vps-server-usa
+- DOMAIN-SUFFIX,jtvnw.net,vps-server-usa
+- DOMAIN-SUFFIX,justgetflux.com,vps-server-usa
+- DOMAIN-SUFFIX,kat.cr,vps-server-usa
+- DOMAIN-SUFFIX,klip.me,vps-server-usa
+- DOMAIN-SUFFIX,libsyn.com,vps-server-usa
+- DOMAIN-SUFFIX,linkedin.com,vps-server-usa
+- DOMAIN-SUFFIX,line-apps.com,vps-server-usa
+- DOMAIN-SUFFIX,linode.com,vps-server-usa
+- DOMAIN-SUFFIX,lithium.com,vps-server-usa
+- DOMAIN-SUFFIX,littlehj.com,vps-server-usa
+- DOMAIN-SUFFIX,live.com,vps-server-usa
+- DOMAIN-SUFFIX,live.net,vps-server-usa
+- DOMAIN-SUFFIX,livefilestore.com,vps-server-usa
+- DOMAIN-SUFFIX,llnwd.net,vps-server-usa
+- DOMAIN-SUFFIX,macid.co,vps-server-usa
+- DOMAIN-SUFFIX,macromedia.com,vps-server-usa
+- DOMAIN-SUFFIX,macrumors.com,vps-server-usa
+- DOMAIN-SUFFIX,mashable.com,vps-server-usa
+- DOMAIN-SUFFIX,mathjax.org,vps-server-usa
+- DOMAIN-SUFFIX,medium.com,vps-server-usa
+- DOMAIN-SUFFIX,mega.co.nz,vps-server-usa
+- DOMAIN-SUFFIX,mega.nz,vps-server-usa
+- DOMAIN-SUFFIX,megaupload.com,vps-server-usa
+- DOMAIN-SUFFIX,microsofttranslator.com,vps-server-usa
+- DOMAIN-SUFFIX,mindnode.com,vps-server-usa
+- DOMAIN-SUFFIX,mobile01.com,vps-server-usa
+- DOMAIN-SUFFIX,modmyi.com,vps-server-usa
+- DOMAIN-SUFFIX,msedge.net,vps-server-usa
+- DOMAIN-SUFFIX,myfontastic.com,vps-server-usa
+- DOMAIN-SUFFIX,name.com,vps-server-usa
+- DOMAIN-SUFFIX,nextmedia.com,vps-server-usa
+- DOMAIN-SUFFIX,nsstatic.net,vps-server-usa
+- DOMAIN-SUFFIX,nssurge.com,vps-server-usa
+- DOMAIN-SUFFIX,nyt.com,vps-server-usa
+- DOMAIN-SUFFIX,nytimes.com,vps-server-usa
+- DOMAIN-SUFFIX,omnigroup.com,vps-server-usa
+- DOMAIN-SUFFIX,onedrive.com,vps-server-usa
+- DOMAIN-SUFFIX,onenote.com,vps-server-usa
+- DOMAIN-SUFFIX,ooyala.com,vps-server-usa
+- DOMAIN-SUFFIX,openvpn.net,vps-server-usa
+- DOMAIN-SUFFIX,openwrt.org,vps-server-usa
+- DOMAIN-SUFFIX,orkut.com,vps-server-usa
+- DOMAIN-SUFFIX,osxdaily.com,vps-server-usa
+- DOMAIN-SUFFIX,outlook.com,vps-server-usa
+- DOMAIN-SUFFIX,ow.ly,vps-server-usa
+- DOMAIN-SUFFIX,paddleapi.com,vps-server-usa
+- DOMAIN-SUFFIX,parallels.com,vps-server-usa
+- DOMAIN-SUFFIX,parse.com,vps-server-usa
+- DOMAIN-SUFFIX,pdfexpert.com,vps-server-usa
+- DOMAIN-SUFFIX,periscope.tv,vps-server-usa
+- DOMAIN-SUFFIX,pinboard.in,vps-server-usa
+- DOMAIN-SUFFIX,pinterest.com,vps-server-usa
+- DOMAIN-SUFFIX,pixelmator.com,vps-server-usa
+- DOMAIN-SUFFIX,pixiv.net,vps-server-usa
+- DOMAIN-SUFFIX,playpcesor.com,vps-server-usa
+- DOMAIN-SUFFIX,playstation.com,vps-server-usa
+- DOMAIN-SUFFIX,playstation.com.hk,vps-server-usa
+- DOMAIN-SUFFIX,playstation.net,vps-server-usa
+- DOMAIN-SUFFIX,playstationnetwork.com,vps-server-usa
+- DOMAIN-SUFFIX,pushwoosh.com,vps-server-usa
+- DOMAIN-SUFFIX,rime.im,vps-server-usa
+- DOMAIN-SUFFIX,servebom.com,vps-server-usa
+- DOMAIN-SUFFIX,sfx.ms,vps-server-usa
+- DOMAIN-SUFFIX,shadowsocks.org,vps-server-usa
+- DOMAIN-SUFFIX,sharethis.com,vps-server-usa
+- DOMAIN-SUFFIX,shazam.com,vps-server-usa
+- DOMAIN-SUFFIX,skype.com,vps-server-usa
+- DOMAIN-SUFFIX,smartdns良心云.com,vps-server-usa
+- DOMAIN-SUFFIX,smartmailcloud.com,vps-server-usa
+- DOMAIN-SUFFIX,sndcdn.com,vps-server-usa
+- DOMAIN-SUFFIX,sony.com,vps-server-usa
+- DOMAIN-SUFFIX,soundcloud.com,vps-server-usa
+- DOMAIN-SUFFIX,sourceforge.net,vps-server-usa
+- DOMAIN-SUFFIX,spotify.com,vps-server-usa
+- DOMAIN-SUFFIX,squarespace.com,vps-server-usa
+- DOMAIN-SUFFIX,sstatic.net,vps-server-usa
+- DOMAIN-SUFFIX,st.luluku.pw,vps-server-usa
+- DOMAIN-SUFFIX,stackoverflow.com,vps-server-usa
+- DOMAIN-SUFFIX,startpage.com,vps-server-usa
+- DOMAIN-SUFFIX,staticflickr.com,vps-server-usa
+- DOMAIN-SUFFIX,steamcommunity.com,vps-server-usa
+- DOMAIN-SUFFIX,symauth.com,vps-server-usa
+- DOMAIN-SUFFIX,symcb.com,vps-server-usa
+- DOMAIN-SUFFIX,symcd.com,vps-server-usa
+- DOMAIN-SUFFIX,tapbots.com,vps-server-usa
+- DOMAIN-SUFFIX,tapbots.net,vps-server-usa
+- DOMAIN-SUFFIX,tdesktop.com,vps-server-usa
+- DOMAIN-SUFFIX,techcrunch.com,vps-server-usa
+- DOMAIN-SUFFIX,techsmith.com,vps-server-usa
+- DOMAIN-SUFFIX,thepiratebay.org,vps-server-usa
+- DOMAIN-SUFFIX,theverge.com,vps-server-usa
+- DOMAIN-SUFFIX,time.com,vps-server-usa
+- DOMAIN-SUFFIX,timeinc.net,vps-server-usa
+- DOMAIN-SUFFIX,tiny.cc,vps-server-usa
+- DOMAIN-SUFFIX,tinypic.com,vps-server-usa
+- DOMAIN-SUFFIX,tmblr.co,vps-server-usa
+- DOMAIN-SUFFIX,todoist.com,vps-server-usa
+- DOMAIN-SUFFIX,trello.com,vps-server-usa
+- DOMAIN-SUFFIX,trustasiassl.com,vps-server-usa
+- DOMAIN-SUFFIX,tumblr.co,vps-server-usa
+- DOMAIN-SUFFIX,tumblr.com,vps-server-usa
+- DOMAIN-SUFFIX,tweetdeck.com,vps-server-usa
+- DOMAIN-SUFFIX,tweetmarker.net,vps-server-usa
+- DOMAIN-SUFFIX,twitch.tv,vps-server-usa
+- DOMAIN-SUFFIX,txmblr.com,vps-server-usa
+- DOMAIN-SUFFIX,typekit.net,vps-server-usa
+- DOMAIN-SUFFIX,ubertags.com,vps-server-usa
+- DOMAIN-SUFFIX,ublock.org,vps-server-usa
+- DOMAIN-SUFFIX,ubnt.com,vps-server-usa
+- DOMAIN-SUFFIX,ulyssesapp.com,vps-server-usa
+- DOMAIN-SUFFIX,urchin.com,vps-server-usa
+- DOMAIN-SUFFIX,usertrust.com,vps-server-usa
+- DOMAIN-SUFFIX,v.gd,vps-server-usa
+- DOMAIN-SUFFIX,v2ex.com,vps-server-usa
+- DOMAIN-SUFFIX,vimeo.com,vps-server-usa
+- DOMAIN-SUFFIX,vimeocdn.com,vps-server-usa
+- DOMAIN-SUFFIX,vine.co,vps-server-usa
+- DOMAIN-SUFFIX,vivaldi.com,vps-server-usa
+- DOMAIN-SUFFIX,vox-cdn.com,vps-server-usa
+- DOMAIN-SUFFIX,vsco.co,vps-server-usa
+- DOMAIN-SUFFIX,vultr.com,vps-server-usa
+- DOMAIN-SUFFIX,w.org,vps-server-usa
+- DOMAIN-SUFFIX,w3schools.com,vps-server-usa
+- DOMAIN-SUFFIX,webtype.com,vps-server-usa
+- DOMAIN-SUFFIX,wikiwand.com,vps-server-usa
+- DOMAIN-SUFFIX,wikileaks.org,vps-server-usa
+- DOMAIN-SUFFIX,wikimedia.org,vps-server-usa
+- DOMAIN-SUFFIX,wikipedia.com,vps-server-usa
+- DOMAIN-SUFFIX,wikipedia.org,vps-server-usa
+- DOMAIN-SUFFIX,windows.com,vps-server-usa
+- DOMAIN-SUFFIX,windows.net,vps-server-usa
+- DOMAIN-SUFFIX,wire.com,vps-server-usa
+- DOMAIN-SUFFIX,wordpress.com,vps-server-usa
+- DOMAIN-SUFFIX,workflowy.com,vps-server-usa
+- DOMAIN-SUFFIX,wp.com,vps-server-usa
+- DOMAIN-SUFFIX,wsj.com,vps-server-usa
+- DOMAIN-SUFFIX,wsj.net,vps-server-usa
+- DOMAIN-SUFFIX,xda-developers.com,vps-server-usa
+- DOMAIN-SUFFIX,xeeno.com,vps-server-usa
+- DOMAIN-SUFFIX,xiti.com,vps-server-usa
+- DOMAIN-SUFFIX,yahoo.com,vps-server-usa
+- DOMAIN-SUFFIX,yimg.com,vps-server-usa
+- DOMAIN-SUFFIX,ying.com,vps-server-usa
+- DOMAIN-SUFFIX,yoyo.org,vps-server-usa
+- DOMAIN-SUFFIX,ytimg.com,vps-server-usa
+- DOMAIN-SUFFIX,telegra.ph,vps-server-usa
+- DOMAIN-SUFFIX,telegram.org,vps-server-usa
+- IP-CIDR,91.108.4.0/22,vps-server-usa,no-resolve
+- IP-CIDR,91.108.8.0/21,vps-server-usa,no-resolve
+- IP-CIDR,91.108.16.0/22,vps-server-usa,no-resolve
+- IP-CIDR,91.108.56.0/22,vps-server-usa,no-resolve
+- IP-CIDR,149.154.160.0/20,vps-server-usa,no-resolve
+- IP-CIDR6,2001:67c:4e8::/48,vps-server-usa,no-resolve
+- IP-CIDR6,2001:b28:f23d::/48,vps-server-usa,no-resolve
+- IP-CIDR6,2001:b28:f23f::/48,vps-server-usa,no-resolve
+- IP-CIDR,120.232.181.162/32,vps-server-usa,no-resolve
+- IP-CIDR,120.241.147.226/32,vps-server-usa,no-resolve
+- IP-CIDR,120.253.253.226/32,vps-server-usa,no-resolve
+- IP-CIDR,120.253.255.162/32,vps-server-usa,no-resolve
+- IP-CIDR,120.253.255.34/32,vps-server-usa,no-resolve
+- IP-CIDR,120.253.255.98/32,vps-server-usa,no-resolve
+- IP-CIDR,180.163.150.162/32,vps-server-usa,no-resolve
+- IP-CIDR,180.163.150.34/32,vps-server-usa,no-resolve
+- IP-CIDR,180.163.151.162/32,vps-server-usa,no-resolve
+- IP-CIDR,180.163.151.34/32,vps-server-usa,no-resolve
+- IP-CIDR,203.208.39.0/24,vps-server-usa,no-resolve
+- IP-CIDR,203.208.40.0/24,vps-server-usa,no-resolve
+- IP-CIDR,203.208.41.0/24,vps-server-usa,no-resolve
+- IP-CIDR,203.208.43.0/24,vps-server-usa,no-resolve
+- IP-CIDR,203.208.50.0/24,vps-server-usa,no-resolve
+- IP-CIDR,220.181.174.162/32,vps-server-usa,no-resolve
+- IP-CIDR,220.181.174.226/32,vps-server-usa,no-resolve
+- IP-CIDR,220.181.174.34/32,vps-server-usa,no-resolve
+- DOMAIN,injections.adguard.org,DIRECT
+- DOMAIN,local.adguard.org,DIRECT
+- DOMAIN-SUFFIX,local,DIRECT
+- IP-CIDR,127.0.0.0/8,DIRECT
+- IP-CIDR,172.16.0.0/12,DIRECT
+- IP-CIDR,192.168.0.0/16,DIRECT
+- IP-CIDR,10.0.0.0/8,DIRECT
+- IP-CIDR,17.0.0.0/8,DIRECT
+- IP-CIDR,100.64.0.0/10,DIRECT
+- IP-CIDR,224.0.0.0/4,DIRECT
+- IP-CIDR6,fe80::/10,DIRECT
+- DOMAIN-SUFFIX,cn,DIRECT
+- DOMAIN-KEYWORD,-cn,DIRECT
+- GEOIP,CN,DIRECT
+- MATCH,vps-server-usa
+dns:
+  enable: true
+  ipv6: false
+  default-nameserver:
+  - 1.1.1.1
+  - 8.8.8.8
+  enhanced-mode: redir-host
+  fake-ip-range: 198.18.0.1/16
+  use-hosts: true
+  respect-rules: false
+  proxy-server-nameserver:
+  - 1.1.1.1
+  - 8.8.8.8
+  nameserver:
+  - https://cloudflare-dns.com/dns-query#vps-server-usa
+  - https://dns.google/dns-query#vps-server-usa
+  fallback: []
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+    - 240.0.0.0/4
+    - 0.0.0.0/32
+  direct-nameserver: []
+  direct-nameserver-follow-policy: true
+  nameserver-policy:
+    "+.music.163.com":
+    - https://dns.alidns.com/dns-query#DIRECT
+    - https://doh.pub/dns-query#DIRECT
+    "+.music.126.net":
+    - https://dns.alidns.com/dns-query#DIRECT
+    - https://doh.pub/dns-query#DIRECT
+    geosite:cn:
+    - https://dns.alidns.com/dns-query#DIRECT
+    - https://doh.pub/dns-query#DIRECT
+    "+.anthropic.com":
+    - https://cloudflare-dns.com/dns-query#vps-server-usa
+    - https://dns.google/dns-query#vps-server-usa
+    "+.claude.ai":
+    - https://cloudflare-dns.com/dns-query#vps-server-usa
+    - https://dns.google/dns-query#vps-server-usa
+    "+.claude.com":
+    - https://cloudflare-dns.com/dns-query#vps-server-usa
+    - https://dns.google/dns-query#vps-server-usa
+  fake-ip-filter:
+  - localhost
+  - "*.local"
+  - "*.lan"
+  - "*.localdomain"
+  - "+.stun.*.*"
+  - "+.stun.*.*.*"
+  - time.*.com
+  - time.*.gov
+  - time.*.edu.cn
+  - ntp.*.com
+  - "*.ntp.org.cn"
+  - "*.time.edu.cn"
+  - "*.apple.com"
+  - "*.icloud.com"
+  - "*.crashlytics.com"
+  - "+.99ai.uk"
+  - "+.go.dev"
+  - "+.golang.org"
+profile:
+  store-selected: true
+tcp-concurrent: true
+unified-delay: true
