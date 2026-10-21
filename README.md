@@ -325,18 +325,14 @@ Only the skills below are currently installable. Retired skills live in `_archiv
 |-------|-------------|
 | `conductor` | Parallel multi-agent development orchestration |
 | `deploy-service` | Trigger any repository's own deployment CI (GitHub Actions / GitLab CI), reading environments and services live from that repo's CI definition |
-| `docx` | Create, read, edit Word documents |
 | `docx-template` | Generate DOCX programmatically with docxtemplater + raw XML |
 | `git-commit-push-pr` | Commit → push → open MR/PR, then deploy affected services |
 | `grill-me` | Short-form relentless interview to sharpen a plan |
 | `grilling` | Stress-test a plan, decision, or idea |
 | `md-to-docx-with-mermaid` | Convert markdown → docx with mermaid diagrams rendered as images |
-| `pdf` | Read, extract, merge, split, watermark, fill, OCR PDFs |
-| `pptx` | Create, read, edit PowerPoint decks |
 | `review-and-pr` | Code review → compile check → commit → PR in one flow |
 | `reviewcode` | Go code review: logging/traceability, error handling, abstraction, retry & timeouts, general quality |
 | `vps-deploy` | Deploy and tune authorized VPS proxies, with a full Mihomo YAML template, preserved routing rules, iOS ClashMi adaptation, and per-host interface/service validation |
-| `xlsx` | Create, read, edit spreadsheets and tabular data |
 
 ### Archived Qi Men skill
 
