@@ -28,6 +28,10 @@ description: 部署和维护已授权 VPS 上的 Hysteria2 等个人代理，生
 
 调整 Mihomo、Clash Verge 或 ClashMi 时读取 [references/mihomo.md](references/mihomo.md)。
 
+完整独立配置模板在 [assets/vps-server-usa.yaml](assets/vps-server-usa.yaml)，含 522 条分流规则。模板使用示例服务器、占位密码及全零证书指纹，不能直接连接；在私有输出中填写真实值。两个桌面进程路径里的 `LOCAL_USER` 也需按目标主机替换，iOS 上这些规则通常不会匹配。45 Mbps 只是样例带宽，不能作为其他网络的已验证值。用户自己的私有配置优先，模板不能覆盖其规则更新。
+
+部署或换机前按 [references/host-validation.md](references/host-validation.md) 验证目标接口、实际客户端链路及服务器服务；接口不存在、未实测或只做了语法检查时，不报告服务验证通过。
+
 - 独立配置和单独策略组是不同交付物。用户要求独立配置时，生成完整 YAML，保留原有 `rules` 数组的内容与顺序，仅改必要的节点和规则目标引用。
 - 校验原配置与新配置的规则数组、DNS 策略及资源引用；有意变化逐项说明。不能只验证 YAML 语法，必须使用目标兼容内核检查加载结果。
 - 检查应用的订阅源、全局 Merge、专属 Merge、脚本和生效配置。按单个配置设置覆盖，避免改变其他机场或用户配置。
