@@ -20,3 +20,6 @@ test('model label follows native session data and strips control characters',()=
  assert.match(render({model:{id:'deepseek-v4.1-flash'}},undefined),/^deepseek-v4.1-flash \|/);
  assert(!render({model:{display_name:'bad\nname'}},undefined).includes('\n'));
 });
+test('aggregate labels retain the real selected channel without the reserved routing prefix',()=>{
+ assert.match(render({model:{id:'ccs-claude-deepseek-official--deepseek-flash[1M]'}},undefined),/^deepseek-flash \(deepseek-official\) \|/);
+});

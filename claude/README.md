@@ -94,3 +94,13 @@ node --test claude/install.test.cjs claude/launch.test.cjs claude/statusline/sta
 恢复时从安装输出的私有备份复制回对应文件。若使用 CC Switch，还需在其公共配置/provider 中恢复 statusLine 与 autoCompact 字段；备份 `cc-switch-model-settings.json` 保存了安装前原值，包含私密 provider 数据，切勿上传到公开仓库。不要为恢复本配置而覆盖正在使用的整库数据库。
 
 参考：[Claude status line](https://code.claude.com/docs/en/statusline)、[auto-compact window](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window)、[OpenAI Fast mode](https://developers.openai.com/api/docs/guides/fast-mode)、[CC Switch conversion source](https://github.com/farion1231/cc-switch/blob/79ba7982aa3980b001c0b68efde05505884c1f8b/src-tauri/src/proxy/providers/transform_responses.rs#L2003)。
+
+## DeepSeek 手动双渠道聚合
+
+CC Switch 的“聚合 / Stack”模式可以把两个 provider 的模型同时列进 `/model`；模型 ID 自带 provider 路由信息，选中的请求只去该渠道，不轮询、不自动兜底。
+
+在 CC Switch 保留已有 jxmedia 和 DeepSeek 官方 provider，启用聚合并把两者加入。jxmedia 的 Flash 模型按其实际 ID 配置（本机为 `deepseek-v4.1-flash`），官方按官方列表配置 `deepseek-flash`；两条 DeepSeek 均可声明1M。provider key/账号绑定留在本机，不放进本仓库。现有 GPT 模型可继续作为聚合成员模型发布。
+
+启动入口识别 `ccs-claude-<provider-key>--<model>`，保留 CC Switch 生成的完整聚合列表，不会再被默认 provider 自己的列表覆盖。GPT 原有模型描述优先保留；状态栏仍显示所选模型及渠道。新会话会显式选择解析后的默认模型，避免原生 `sonnet` 默认别名隐含的 `[1m]` 被误套到 GPT Sol。
+
+本机已验证 jxmedia 与官方两条 Flash 请求均返回200，且请求日志的 provider_id 分别对应各自渠道。官方的 `deepseek-flash` 与 jxmedia 的 `deepseek-v4.1-flash` 是不同的上游 ID，本配置不声称两者永远指向相同版本。
