@@ -27,7 +27,6 @@ node claude/install.cjs --no-cc-switch
 | `~/.claude/statusline.sh` | 原生 statusLine 的 shell 入口 |
 | `~/.claude/statusline.cjs` | 读取 stdin JSON、计算并输出一行状态 |
 | `~/.claude/launch.cjs` | 读取当前 provider 模型列表，按启动模型声明原生窗口 |
-| `~/.claude/deepseek-channel.cjs` | 可选 DeepSeek 手动渠道分流；需单独 configure 才启用 |
 | `~/.config/fish/functions/claude.fish` | Fish 中普通 claude 自动使用该入口；原函数有备份 |
 | `~/.claude/settings.json` | 合并 statusLine、autoCompactEnabled、autoCompactWindow |
 | `~/.claude/backups/native-statusline-*` | 安装前的私有备份，权限 700/600；可能含本机凭据，禁止提交 |
@@ -87,7 +86,7 @@ CC Switch 的 Codex OAuth provider 可开启 **Fast**，元数据字段是 `code
 ## 验证与恢复
 
 ```sh
-node --test claude/install.test.cjs claude/launch.test.cjs claude/statusline/statusline.test.cjs claude/deepseek-channel.test.cjs
+node --test claude/install.test.cjs claude/launch.test.cjs claude/statusline/statusline.test.cjs
 ```
 
 进入 Claude Code 后检查状态栏，执行 `/autocompact` 检查 400k 与实际窗口的截断情况。没有请求时 token/s、缓存等显示 `--` 是正常情况。
@@ -96,30 +95,8 @@ node --test claude/install.test.cjs claude/launch.test.cjs claude/statusline/sta
 
 参考：[Claude status line](https://code.claude.com/docs/en/statusline)、[auto-compact window](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window)、[OpenAI Fast mode](https://developers.openai.com/api/docs/guides/fast-mode)、[CC Switch conversion source](https://github.com/farion1231/cc-switch/blob/79ba7982aa3980b001c0b68efde05505884c1f8b/src-tauri/src/proxy/providers/transform_responses.rs#L2003)。
 
-## 只为 DeepSeek 手动切换渠道
+## 手动切换 DeepSeek 渠道（不使用聚合模型）
 
-保持 CC Switch 的 Claude Code 路由选中原来的 jxmedia provider。模型列表、名称和描述不变，GPT 始终走该 provider。不要为了切 DeepSeek 改整个 provider 或开启聚合模式。
+渠道在 CC Switch 的 Claude Code **路由**模式下切换：平时选择原有 jxmedia provider，需要官方 DeepSeek 时选择原有 `DeepSeek` provider（官方 Anthropic 兼容地址为 `https://api.deepseek.com/anthropic`）。不要为此启用聚合或给 `/model` 添加渠道前缀。各 provider 保留自己的模型配置，模型菜单不显示 `ccs-...` 路由 ID 或额外渠道后缀。
 
-可选本地分流入口部署在 `~/.claude/deepseek-channel.cjs`，监听 `127.0.0.1:15722`。安装器会复制脚本和 Fish 命令；初次需绑定本机已有的两个 provider ID（不是 API key）：
-
-~~~sh
-node ~/.claude/deepseek-channel.cjs configure JXMEDIA_PROVIDER_ID OFFICIAL_DEEPSEEK_PROVIDER_ID
-~~~
-
-两个 ID 在本机 `~/.cc-switch/cc-switch.db` 的 `providers.id` 中；配置文件 `~/.claude/deepseek-channel.json` 仅保存渠道、端口和 ID，不保存凭据。官方 provider 应使用 `https://api.deepseek.com/anthropic` 和已有 `ANTHROPIC_API_KEY`。运行 configure 默认选择 jxmedia；重装后保留该文件即可继续使用。关闭此功能可将该 JSON 移出原路径，再重启 Claude Code。
-
-配置后重新打开一次 Claude Code，让启动入口加载本地分流地址；之后在另一个 Fish 终端手动切换即可，无需重启会话：
-
-~~~sh
-deepseek-channel jxmedia
-deepseek-channel official
-deepseek-channel status
-~~~
-
-其他 shell 使用 `node ~/.claude/deepseek-channel.cjs official` 等同等命令。`claude` 的 Fish 启动入口会自动拉起路由进程，不需手动运行服务。仅经该启动入口新开的会话启用此功能；已经运行的旧会话及其后台任务仍走旧地址。
-
-- 仅精确的 `deepseek-v4.1-flash`（含可选原生 `[1m]` 标记）受开关影响。jxmedia 渠道保持原请求；官方渠道只在上游请求中映射为 `deepseek-flash`，界面中的模型 ID 和名称不变。
-- 所有 GPT 及其他模型继续交给 CC Switch 的原 jxmedia 路由。请求开始时读取渠道，在途请求不会中途换服务；不做自动故障转移。
-- 官方调用直接使用现有 CC Switch provider 的 API key，仅发送 `x-api-key`，不同时发送 Bearer。jxmedia 继续使用原 CC Switch 本地鉴权。密钥不写入新配置或日志。
-- 若把 CC Switch 整体路由改到其他 provider，分流器会返回配置错误，避免 GPT 意外发往 DeepSeek。官方直连请求不会进入 CC Switch 的用量统计；仍会由官方按实际调用计费。
-- 原生状态栏、压缩、权限模式与模型配置均不由分流器改写。
+切换 provider 后新开 Claude 会话，让原生设置加载对应渠道。不要把已有后台会话仍持有的模型选择误认为渠道没有切换。本安装器保留已有 provider/凭据，不能把只支持 DeepSeek 的官方接口当成 GPT 渠道。
