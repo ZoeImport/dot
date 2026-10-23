@@ -36,11 +36,15 @@ function providerProfile(home) {
   const env=Object.fromEntries(Object.entries(source.env||{}).filter(([k])=>/^ANTHROPIC_DEFAULT_.*MODEL(?:_NAME|_DESCRIPTION)?$/.test(k)));
   return {...(source.modelPicker?{modelPicker:source.modelPicker}:{}),...(source.modelSettings?{modelSettings:source.modelSettings}:{}),env};
 }
-function launch(args=process.argv.slice(2),home=os.homedir()) {
+async function launch(args=process.argv.slice(2),home=os.homedir()) {
   const file=path.join(home,'.claude','settings.json');
   const live=fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):{};
   const profile=providerProfile(home);
   const request=plan(args,live,profile);
+  if(fs.existsSync(path.join(home,'.claude','deepseek-channel.json'))){
+    const router=await require('./deepseek-channel.cjs').ensure(home);
+    profile.env={...profile.env,ANTHROPIC_BASE_URL:'http://127.0.0.1:'+router.port};
+  }
   if(Object.keys(profile).length){
     const overlay=path.join(home,'.claude','provider-models.generated.json'),temp=overlay+'.'+process.pid;
     fs.writeFileSync(temp,JSON.stringify(profile,null,2)+'\n',{mode:0o600});fs.renameSync(temp,overlay);
@@ -54,4 +58,4 @@ function launch(args=process.argv.slice(2),home=os.homedir()) {
   child.on('exit',(code,signal)=>{process.exitCode=code ?? (signal?1:0);});
 }
 module.exports={windows,selectedModel,plan,providerProfile};
-if(require.main===module){try{launch();}catch{console.error('Claude model setup failed. Check local settings and CC Switch availability.');process.exitCode=1;}}
+if(require.main===module)launch().catch(()=>{console.error('Claude model setup failed. Check local settings and CC Switch availability.');process.exitCode=1;});
