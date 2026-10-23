@@ -54,6 +54,16 @@ function install(home = os.homedir(), source = __dirname, useCCSwitch = true) {
     }
     cp.execFileSync('sqlite3',['-cmd','.timeout 5000',database],{input:'BEGIN IMMEDIATE;\n'+statements.join('\n')+'\nCOMMIT;\n',encoding:'utf8',stdio:['pipe','pipe','pipe']});
   }
+  if(fs.existsSync(path.join(dir,'launch.cjs'))) { fs.copyFileSync(path.join(dir,'launch.cjs'),path.join(backup,'launch.cjs')); fs.chmodSync(path.join(backup,'launch.cjs'),0o600); }
+  fs.copyFileSync(path.join(source,'launch.cjs'),path.join(dir,'launch.cjs'));
+  fs.chmodSync(path.join(dir,'launch.cjs'),0o700);
+  const functions=path.join(home,'.config','fish','functions');
+  if(fs.existsSync(path.join(home,'.config','fish'))) {
+    fs.mkdirSync(functions,{recursive:true});
+    const target=path.join(functions,'claude.fish');
+    if(fs.existsSync(target)) { fs.copyFileSync(target,path.join(backup,'claude.fish')); fs.chmodSync(path.join(backup,'claude.fish'),0o600); }
+    fs.writeFileSync(target,'function claude --description "Claude Code with provider model configuration"\n    node "$HOME/.claude/launch.cjs" $argv\nend\n');
+  }
   writeJSON(file,configure(current));
   return {settings:file,backup,ccSwitch:useCCSwitch && fs.existsSync(database)};
 }
