@@ -28,9 +28,7 @@ function render(input, rate) {
   }
   const effort = ['low','medium','high','xhigh','max'].includes(input.effort?.level) ? input.effort.level : '--';
   const pr = Number.isInteger(input.pr?.number) && input.pr.number > 0 ? (input.pr.kind === 'mr' ? 'MR #' : 'PR #') + input.pr.number : 'PR --';
-  const rawModel = String(input.model?.display_name || input.model?.id || '--').replace(/[\x00-\x1f\x7f-\x9f\u202a-\u202e\u2066-\u2069]/g, '').slice(0,200);
-  const stackModel = rawModel.match(/^ccs-claude-([a-z0-9-]+)--(.+?)(?:\[1m\])?$/i);
-  const model = (stackModel ? stackModel[2] + ' (' + stackModel[1] + ')' : rawModel).slice(0,80);
+  const model = String(input.model?.display_name || input.model?.id || '--').replace(/[\x00-\x1f\x7f-\x9f\u202a-\u202e\u2066-\u2069]/g, '').slice(0,80);
   return [
     model,
     'avg ' + (finite(rate) ? rate.toFixed(1) : '--') + ' tok/s',
