@@ -4,6 +4,15 @@ const fs = require('node:fs'), os = require('node:os'), path = require('node:pat
 const {save, target, authorized, handle} = require('./deepseek-channel.cjs');
 const listen = server => new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const close = server => new Promise(resolve => {server.closeAllConnections(); server.close(resolve);});
+test('malformed private settings never appear in CLI error output', () => {
+  const home=fs.mkdtempSync(path.join(os.tmpdir(),'deepseek-private-error-'));
+  try {
+    fs.mkdirSync(path.join(home,'.claude'));
+    fs.writeFileSync(path.join(home,'.claude','settings.json'),'{"key":"private-key-test" BROKEN');
+    const result=require('node:child_process').spawnSync(process.execPath,[path.join(__dirname,'deepseek-channel.cjs'),'serve'],{encoding:'utf8',env:{...process.env,HOME:home}});
+    assert.equal(result.status,1);assert(!result.stderr.includes('private-key-test'));assert.match(result.stderr,/setup failed/);
+  } finally {fs.rmSync(home,{recursive:true,force:true});}
+});
 test('only exact DeepSeek model selects official; GPT and unrelated names retain jxmedia', () => {
   for (const model of ['gpt-6-astra','gpt-6.1-sol','deepseek-v4-pro','claude-haiku-4-5']) assert.equal(target(model,'official'),'jxmedia');
   assert.equal(target('deepseek-v4.1-flash','official'),'official');

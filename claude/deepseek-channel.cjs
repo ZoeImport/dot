@@ -135,4 +135,8 @@ async function main(args, home) {
   console.log('DeepSeek channel: ' + config(home).channel + ' (GPT unchanged)');
 }
 module.exports = {configPath, save, config, context, authorized, target, handle, serve, ensure};
-if (require.main === module) main(process.argv.slice(2), os.homedir()).catch(error => {console.error(error.message); process.exitCode=1;});
+if (require.main === module) main(process.argv.slice(2), os.homedir()).catch(() => {
+  // JSON/SQLite exceptions can contain snippets of private provider configuration.
+  console.error('DeepSeek channel setup failed. Check local settings and the jxmedia route. Usage: deepseek-channel [jxmedia|official|status]');
+  process.exitCode=1;
+});
