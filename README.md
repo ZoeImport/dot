@@ -45,6 +45,16 @@ npm install superpowers@git+https://github.com/obra/superpowers.git
 #    plugins install automatically on first launch (see plugin field in opencode.json)
 ```
 
+### Claude Code: native statusline and 400k auto-compaction
+
+```sh
+node claude/install.cjs
+```
+
+The installer merges configuration without replacing existing accounts, models, permissions or hooks. It installs token/s, context, cache hit ratio, reasoning effort and PR/MR status through Claude Code's native statusLine. If CC Switch is installed, it also persists these fields in its shared/provider configuration. No Mod or extra model call is used. Auto-compaction is configured at 400,000 tokens and is **capped by the model's actual recognized window**.
+
+See [Claude Code setup, reinstall, metrics and limitations](claude/README.md). Do not overwrite an authenticated machine with the public `claude/settings.json` template.
+
 ### Required: Configure API Keys
 
 All provider API keys are set to `xxx` for public safety. **You MUST configure them before use:**

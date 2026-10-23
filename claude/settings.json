@@ -70,12 +70,14 @@
   "preferredNotifChannel": "kitty",
   "skipDangerousModePermissionPrompt": true,
   "statusLine": {
-    "command": "bash ~/.claude/statusline-command.sh",
-    "type": "command"
+    "type": "command",
+    "command": "sh ~/.claude/statusline.sh"
   },
   "theme": "light-daltonized",
   "verbose": false,
   "worktree": {
     "baseRef": "fresh"
-  }
+  },
+  "autoCompactEnabled": true,
+  "autoCompactWindow": 400000
 }
