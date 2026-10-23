@@ -28,7 +28,9 @@ function render(input, rate) {
   }
   const effort = ['low','medium','high','xhigh','max'].includes(input.effort?.level) ? input.effort.level : '--';
   const pr = Number.isInteger(input.pr?.number) && input.pr.number > 0 ? (input.pr.kind === 'mr' ? 'MR #' : 'PR #') + input.pr.number : 'PR --';
+  const model = String(input.model?.display_name || input.model?.id || '--').replace(/[\x00-\x1f\x7f-\x9f\u202a-\u202e\u2066-\u2069]/g, '').slice(0,80);
   return [
+    model,
     'avg ' + (finite(rate) ? rate.toFixed(1) : '--') + ' tok/s',
     'Ctx ' + compact(tokens) + '/' + compact(c.context_window_size) + (finite(percentage) ? ' (' + Math.round(percentage) + '%)' : ''),
     'Cache ' + (finite(ratio) && ratio <= 1 ? Math.round(ratio * 100) + '%' : '--'),
@@ -54,5 +56,5 @@ function main() {
 }
 module.exports = { compact, speed, render };
 if (require.main === module) {
-  try { main(); } catch { process.stdout.write('avg -- tok/s | Ctx --/-- | Cache -- | Effort -- | PR --\n'); }
+  try { main(); } catch { process.stdout.write('-- | avg -- tok/s | Ctx --/-- | Cache -- | Effort -- | PR --\n'); }
 }
