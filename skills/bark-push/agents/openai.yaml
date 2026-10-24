@@ -1,0 +1,6 @@
+interface:
+  display_name: "Bark 手机推送"
+  short_description: "使用本机私有配置，通过苹果 APNs 发送加密手机通知，支持关闭代理接收测试"
+  default_prompt: "使用 $bark-push 从本机查找配置，并发送一条加密手机通知。"
+policy:
+  allow_implicit_invocation: true
